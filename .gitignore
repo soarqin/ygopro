@@ -1,0 +1,5 @@
+!.gitignore
+bin/
+build/
+obj/
+premake4.exe
