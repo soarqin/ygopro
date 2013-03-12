@@ -12,6 +12,7 @@
 #include "effect.h"
 #include "interpreter.h"
 #include "ocgapi.h"
+#pragma warning( disable: 4244 )
 
 void field::add_process(uint16 type, uint16 step, effect* peffect, group* target, ptr arg1, ptr arg2) {
 	processor_unit new_unit;

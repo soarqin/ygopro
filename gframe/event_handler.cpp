@@ -8,6 +8,7 @@
 #include "replay_mode.h"
 #include "single_mode.h"
 #include "../ocgcore/field.h"
+#pragma warning( disable: 4018 )
 
 namespace ygo {
 

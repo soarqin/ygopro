@@ -6,6 +6,7 @@
 #include "game.h"
 #include "duelclient.h"
 #include <algorithm>
+#pragma warning( disable: 4018 )
 
 namespace ygo {
 

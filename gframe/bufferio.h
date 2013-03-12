@@ -1,5 +1,6 @@
 #ifndef BUFFERIO_H
 #define BUFFERIO_H
+#pragma warning( disable: 4244 )
 
 class BufferIO {
 public:

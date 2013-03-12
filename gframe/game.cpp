@@ -8,6 +8,7 @@
 #include "duelclient.h"
 #include "netserver.h"
 #include "single_mode.h"
+#pragma warning( disable: 4018 )
 
 #ifndef WIN32
 #include <sys/types.h>

@@ -8,6 +8,7 @@
 #include "game.h"
 #include "replay.h"
 #include "replay_mode.h"
+#pragma warning( disable: 4018 )
 
 namespace ygo {
 

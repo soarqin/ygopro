@@ -6,6 +6,7 @@
 #include "../ocgcore/duel.h"
 #include "../ocgcore/field.h"
 #include "../ocgcore/mtrandom.h"
+#pragma warning( disable: 4018 )
 
 namespace ygo {
 

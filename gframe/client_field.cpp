@@ -4,6 +4,7 @@
 #include "image_manager.h"
 #include "game.h"
 #include "../ocgcore/field.h"
+#pragma warning( disable: 4018 )
 
 namespace ygo {
 
