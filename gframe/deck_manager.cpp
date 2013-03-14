@@ -2,6 +2,7 @@
 #include "data_manager.h"
 #include "game.h"
 #include <algorithm>
+#pragma warning( disable: 4018 )
 
 namespace ygo {
 

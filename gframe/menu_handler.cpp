@@ -7,6 +7,7 @@
 #include "single_mode.h"
 #include "image_manager.h"
 #include "game.h"
+#pragma warning( disable: 4018 )
 
 namespace ygo {
 

@@ -15,6 +15,7 @@
 #include <memory.h>
 #include <iostream>
 #include <algorithm>
+#pragma warning( disable: 4244 )
 
 bool card_sort::operator()(void* const & p1, void* const & p2) const {
 	card* c1 = (card*)p1;

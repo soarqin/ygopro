@@ -4,6 +4,7 @@
 #include "deck_manager.h"
 #include "duelclient.h"
 #include "../ocgcore/field.h"
+#pragma warning( disable: 4018 )
 
 namespace ygo {
 
