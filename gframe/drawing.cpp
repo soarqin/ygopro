@@ -797,7 +797,7 @@ void Game::DrawThumb(code_pointer cp, position2di pos, std::unordered_map<int, i
 	}
 }
 void Game::DrawDeckBd() {
-	wchar_t textBuffer[32];
+	wchar_t textBuffer[128];
 	//main deck
 	driver->draw2DRectangle(recti(310, 137, 410, 157), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
 	driver->draw2DRectangleOutline(recti(309, 136, 410, 157));
