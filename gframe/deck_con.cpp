@@ -623,6 +623,33 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 	}
 	return false;
 }
+
+static inline bool CardNameCompare(const wchar_t *sa, const wchar_t *sb)
+{
+	int i = 0;
+	int j = 0;
+	wchar_t ca;
+	wchar_t cb;
+
+	if (!sa || !sb)
+		return false;
+	while (sa[i])
+	{
+		ca = towupper(sa[i]);
+		cb = towupper(sb[i]);
+		if (ca == cb)
+		{
+			j++;
+			if (!sb[j])
+				return true;
+		}
+		else
+			j = 0;
+		i++;
+	}
+	return false;
+}
+
 void DeckBuilder::FilterCards() {
 	results.clear();
 	const wchar_t* pstr = mainGame->ebCardName->getText();
@@ -698,7 +725,7 @@ void DeckBuilder::FilterCards() {
 				continue;
 		}
 		if(pstr) {
-			if(wcsstr(text.name, pstr) == 0 && wcsstr(text.text, pstr) == 0)
+			if (!CardNameCompare(text.name, pstr) && !CardNameCompare(text.text, pstr))
 				continue;
 		}
 		results.push_back(ptr);
