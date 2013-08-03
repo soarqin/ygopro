@@ -282,6 +282,16 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
 		}
 		case irr::gui::EGET_CHECKBOX_CHANGED: {
 			switch(id) {
+			case CHECKBOX_ENABLE_SOUND:{
+				mainGame->gameConf.enablesound = mainGame->chkEnableSound->isChecked();
+				break;
+			}
+			case CHECKBOX_ENABLE_MUSIC:{
+				mainGame->gameConf.enablemusic = mainGame->chkEnableMusic->isChecked();
+				if(!mainGame->gameConf.enablemusic)
+					mainGame->engineMusic->stopAllSounds();
+				break;
+		    }
 			case CHECKBOX_HP_READY: {
 				if(!caller->isEnabled())
 					break;
