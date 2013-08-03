@@ -215,10 +215,11 @@ bool Game::Initialize() {
 	//system
 	irr::gui::IGUITab* tabSystem = wInfos->addTab(dataManager.GetSysString(1273));
 	chkAutoPos = env->addCheckBox(false, rect<s32>(20, 20, 280, 45), tabSystem, -1, dataManager.GetSysString(1274));
-	chkAutoPos->setChecked(true);
+	chkAutoPos->setChecked(gameConf.autoplace);
 	chkRandomPos = env->addCheckBox(false, rect<s32>(40, 50, 300, 75), tabSystem, -1, dataManager.GetSysString(1275));
+	chkRandomPos->setChecked(gameConf.randomplace);
 	chkAutoChain = env->addCheckBox(false, rect<s32>(20, 80, 280, 105), tabSystem, -1, dataManager.GetSysString(1276));
-	chkAutoChain->setChecked(true);
+	chkAutoChain->setChecked(gameConf.autochain);
 	chkWaitChain = env->addCheckBox(false, rect<s32>(20, 110, 280, 135), tabSystem, -1, dataManager.GetSysString(1277));
 	chkIgnore1 = env->addCheckBox(false, rect<s32>(20, 170, 280, 195), tabSystem, -1, dataManager.GetSysString(1290));
 	chkIgnore2 = env->addCheckBox(false, rect<s32>(20, 200, 280, 225), tabSystem, -1, dataManager.GetSysString(1291));
@@ -590,7 +591,7 @@ void Game::MainLoop() {
 #else
 	usleep(500000);
 #endif
-	SaveConfig();
+	//SaveConfig();
 //	device->drop();
 	engineMusic->drop(); 
 }
@@ -736,6 +737,10 @@ void Game::LoadConfig() {
 	gameConf.lastip[0] = 0;
 	gameConf.lastport[0] = 0;
 	gameConf.roompass[0] = 0;
+	gameConf.autoplace = true;
+	gameConf.randomplace = false;
+	gameConf.autochain = true;
+	gameConf.nodelay = false;
 	fseek(fp, 0, SEEK_END);
 	int fsize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
@@ -777,6 +782,14 @@ void Game::LoadConfig() {
 		} else if(!strcmp(strbuf, "roompass")) {
 			BufferIO::DecodeUTF8(valbuf, wstr);
 			BufferIO::CopyWStr(wstr, gameConf.roompass, 20);
+		} else if(!strcmp(strbuf,"auto_card_placing")){
+			gameConf.autoplace = atoi(valbuf) > 0;
+		} else if(!strcmp(strbuf,"random_card_placing")){
+			gameConf.randomplace = atoi(valbuf) > 0;
+		} else if(!strcmp(strbuf,"auto_chain_order")){
+			gameConf.autochain = atoi(valbuf) > 0;
+		} else if(!strcmp(strbuf,"no_delay_for_chain")){
+			gameConf.nodelay = atoi(valbuf) > 0;
 		}
 	}
 	fclose(fp);
@@ -804,6 +817,7 @@ void Game::SaveConfig() {
 	fprintf(fp, "lastip = %s\n", linebuf);
 	BufferIO::EncodeUTF8(gameConf.lastport, linebuf);
 	fprintf(fp, "lastport = %s\n", linebuf);
+	//fprintf(fp, "auto_card_placing = %s\n", gameConf.autoplace ? 1 : 0);
 	fclose(fp);
 }
 void Game::ShowCardInfo(int code) {

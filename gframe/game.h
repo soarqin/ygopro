@@ -26,6 +26,10 @@ struct Config {
 	wchar_t textfont[256];
 	wchar_t numfont[256];
 	wchar_t roompass[20];
+	bool autoplace;
+	bool randomplace;
+	bool autochain;
+	bool nodelay;
 };
 
 struct DuelInfo {
