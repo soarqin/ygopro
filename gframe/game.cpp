@@ -214,16 +214,14 @@ bool Game::Initialize() {
 	btnClearLog = env->addButton(rect<s32>(160, 300, 260, 325), tabLog, BUTTON_CLEAR_LOG, dataManager.GetSysString(1272));
 	//system
 	irr::gui::IGUITab* tabSystem = wInfos->addTab(dataManager.GetSysString(1273));
-	chkAutoPos = env->addCheckBox(false, rect<s32>(20, 20, 280, 45), tabSystem, -1, dataManager.GetSysString(1274));
-	chkAutoPos->setChecked(gameConf.autoplace);
-	chkRandomPos = env->addCheckBox(false, rect<s32>(40, 50, 300, 75), tabSystem, -1, dataManager.GetSysString(1275));
-	chkRandomPos->setChecked(gameConf.randomplace);
-	chkAutoChain = env->addCheckBox(false, rect<s32>(20, 80, 280, 105), tabSystem, -1, dataManager.GetSysString(1276));
-	chkAutoChain->setChecked(gameConf.autochain);
+	chkAutoPos = env->addCheckBox(gameConf.autoplace, rect<s32>(20, 20, 280, 45), tabSystem, -1, dataManager.GetSysString(1274));
+	chkRandomPos = env->addCheckBox(gameConf.randomplace, rect<s32>(40, 50, 300, 75), tabSystem, -1, dataManager.GetSysString(1275));
+	chkAutoChain = env->addCheckBox(gameConf.autochain, rect<s32>(20, 80, 280, 105), tabSystem, -1, dataManager.GetSysString(1276));
 	chkWaitChain = env->addCheckBox(false, rect<s32>(20, 110, 280, 135), tabSystem, -1, dataManager.GetSysString(1277));
 	chkIgnore1 = env->addCheckBox(false, rect<s32>(20, 170, 280, 195), tabSystem, -1, dataManager.GetSysString(1290));
 	chkIgnore2 = env->addCheckBox(false, rect<s32>(20, 200, 280, 225), tabSystem, -1, dataManager.GetSysString(1291));
-	chkIgnore2->setChecked(false);
+	chkEnableSound = env->addCheckBox(gameConf.enablesound, rect<s32>(20, 230, 280, 255), tabSystem, CHECKBOX_ENABLE_SOUND, dataManager.GetSysString(2046));
+	chkEnableMusic  = env->addCheckBox(gameConf.enablemusic, rect<s32>(20, 260, 280, 285), tabSystem, CHECKBOX_ENABLE_MUSIC, dataManager.GetSysString(2047));
 	//
 	wHand = env->addWindow(rect<s32>(500, 450, 825, 605), false, L"");
 	wHand->getCloseButton()->setVisible(false);
@@ -531,11 +529,8 @@ void Game::MainLoop() {
 		gMutex.Lock();
 		if(dInfo.isStarted) {
 	      if(imageManager.tBackGround2)
-			driver->draw2DImage(imageManager.tBackGround2, Resize(0, 0, 1024, 640), recti(0, 0, imageManager.tBackGround->getOriginalSize().Width, imageManager.tBackGround->getOriginalSize().Height));
-			if(!engineMusic->isCurrentlyPlaying("./sound/song.mp3")){
-				engineMusic->stopAllSounds();
-				engineMusic->play2D("./sound/song.mp3", true);
-			} 
+			driver->draw2DImage(imageManager.tBackGround2, recti(0, 0, 1024, 640), recti(0, 0, imageManager.tBackGround->getOriginalSize().Width, imageManager.tBackGround->getOriginalSize().Height));
+			Game::PlayMusic("./sound/song.mp3",true);
 			DrawBackGround();
 			DrawCards();
 			DrawMisc();
@@ -544,16 +539,10 @@ void Game::MainLoop() {
 			driver->clearZBuffer();
 		} else if(is_building) {
 			DrawDeckBd();
-			if(!engineMusic->isCurrentlyPlaying("./sound/deck.mp3")){
-				engineMusic->stopAllSounds();
-				engineMusic->play2D("./sound/deck.mp3", true);
-			}
+			Game::PlayMusic("./sound/deck.mp3",true);
 		}
 		else {
-			if(!engineMusic->isCurrentlyPlaying("./sound/menu.mp3")){
-				engineMusic->stopAllSounds();
-				engineMusic->play2D("./sound/menu.mp3", true);
-			} 
+			Game::PlayMusic("./sound/menu.mp3",true);
 		}
 		DrawGUI();
 		DrawSpec();
@@ -753,6 +742,8 @@ void Game::LoadConfig() {
 	gameConf.randomplace = false;
 	gameConf.autochain = true;
 	gameConf.nodelay = false;
+	gameConf.enablemusic = true;
+	gameConf.enablesound = true;
 	fseek(fp, 0, SEEK_END);
 	int fsize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
@@ -831,6 +822,19 @@ void Game::SaveConfig() {
 	fprintf(fp, "lastport = %s\n", linebuf);
 	//fprintf(fp, "auto_card_placing = %s\n", gameConf.autoplace ? 1 : 0);
 	fclose(fp);
+}
+void Game::PlayMusic(char* song, bool loop){
+	if(gameConf.enablemusic){
+		if(!engineMusic->isCurrentlyPlaying(song)){
+					engineMusic->stopAllSounds();
+					engineMusic->play2D(song, loop);
+		}
+	}
+}
+void Game::PlaySound(char* sound){
+	if(gameConf.enablesound){
+		engineSound->play2D(sound);
+	}
 }
 void Game::ShowCardInfo(int code) {
 	CardData cd;

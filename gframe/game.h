@@ -30,6 +30,8 @@ struct Config {
 	bool randomplace;
 	bool autochain;
 	bool nodelay;
+	bool enablesound;
+	bool enablemusic;
 };
 
 struct DuelInfo {
@@ -98,6 +100,8 @@ public:
 	void AddChatMsg(wchar_t* msg, int player);
 	void ClearTextures();
 	void CloseDuelWindow();
+	void PlayMusic(char* song, bool loop);
+	void PlaySound(char* sound);
 
 	int LocalPlayer(int player);
 	const wchar_t* LocalName(int local_player);
@@ -181,7 +185,9 @@ public:
 	irr::gui::IGUICheckBox* chkAutoPos;
 	irr::gui::IGUICheckBox* chkRandomPos;
 	irr::gui::IGUICheckBox* chkAutoChain;
-	irr::gui::IGUICheckBox* chkWaitChain;
+	irr::gui::IGUICheckBox* chkWaitChain;	
+	irr::gui::IGUICheckBox* chkEnableSound;
+	irr::gui::IGUICheckBox* chkEnableMusic;
 	irr::gui::IGUIListBox* lstLog;
 	irr::gui::IGUIButton* btnClearLog;
 	irr::gui::IGUIButton* btnSaveLog;
@@ -475,4 +481,6 @@ extern Game* mainGame;
 #define LISTBOX_SINGLEPLAY_LIST		350
 #define BUTTON_LOAD_SINGLEPLAY		351
 #define BUTTON_CANCEL_SINGLEPLAY	352
+#define CHECKBOX_ENABLE_SOUND		353
+#define CHECKBOX_ENABLE_MUSIC		354
 #endif // GAME_H
