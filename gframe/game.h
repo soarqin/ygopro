@@ -102,6 +102,9 @@ public:
 	int LocalPlayer(int player);
 	const wchar_t* LocalName(int local_player);
 
+	recti Resize(s32 x, s32 y, s32 x2, s32 y2);
+	position2di Resize(s32 x, s32 y, bool reverse = false);
+
 	Mutex gMutex;
 	Mutex gBuffer;
 	Signal frameSignal;
@@ -144,6 +147,8 @@ public:
 
 	bool is_building;
 	bool is_siding;
+
+	irr::core::dimension2d<irr::u32> window_size;
 
 	ClientField dField;
 	DeckBuilder deckBuilder;

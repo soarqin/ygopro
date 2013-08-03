@@ -507,6 +507,7 @@ void Game::MainLoop() {
 	int fps = 0;
 	int cur_time = 0;
 	while(device->run()) {
+		window_size = driver->getScreenSize();
 		if(gameConf.use_d3d)
 			linePattern = (linePattern + 1) % 30;
 		else
@@ -515,11 +516,11 @@ void Game::MainLoop() {
 		atkdy = (float)sin(atkframe);
 		driver->beginScene(true, true, SColor(0, 0, 0, 0));
 		if(imageManager.tBackGround)
-			driver->draw2DImage(imageManager.tBackGround, recti(0, 0, 1024, 640), recti(0, 0, imageManager.tBackGround->getOriginalSize().Width, imageManager.tBackGround->getOriginalSize().Height));
+			driver->draw2DImage(imageManager.tBackGround, Resize(0, 0, 1024, 640), recti(0, 0, imageManager.tBackGround->getOriginalSize().Width, imageManager.tBackGround->getOriginalSize().Height));
 		gMutex.Lock();
 		if(dInfo.isStarted) {
 	      if(imageManager.tBackGround2)
-			driver->draw2DImage(imageManager.tBackGround2, recti(0, 0, 1024, 640), recti(0, 0, imageManager.tBackGround->getOriginalSize().Width, imageManager.tBackGround->getOriginalSize().Height));
+			driver->draw2DImage(imageManager.tBackGround2, Resize(0, 0, 1024, 640), recti(0, 0, imageManager.tBackGround->getOriginalSize().Width, imageManager.tBackGround->getOriginalSize().Height));
 			if(!engineMusic->isCurrentlyPlaying("./sound/song.mp3")){
 				engineMusic->stopAllSounds();
 				engineMusic->play2D("./sound/song.mp3", true);
@@ -949,6 +950,28 @@ int Game::LocalPlayer(int player) {
 }
 const wchar_t* Game::LocalName(int local_player) {
 	return local_player == 0 ? dInfo.hostname : dInfo.clientname;
+}
+recti Game::Resize(s32 x, s32 y, s32 x2, s32 y2)
+{
+	x = x * window_size.Width / 1024;
+	y = y * window_size.Height / 640;
+	x2 = x2 * window_size.Width / 1024;
+	y2 = y2 * window_size.Height / 640;
+	return recti(x, y, x2, y2);
+}
+position2di Game::Resize(s32 x, s32 y, bool reverse)
+{
+	if (reverse)
+	{
+		x = x * 1024 / window_size.Width;
+		y = y * 640 / window_size.Height;
+	}
+	else
+	{
+		x = x * window_size.Width / 1024;
+		y = y * window_size.Height / 640;
+	}
+	return position2di(x, y);
 }
 
 }
