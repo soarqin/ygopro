@@ -979,8 +979,10 @@ void Game::OnResize()
 	wANCard->setRelativePosition(ResizeWin(560, 170, 770, 370));
 	wANAttribute->setRelativePosition(ResizeWin(500, 200, 830, 285));
 	wANRace->setRelativePosition(ResizeWin(480, 200, 850, 385));
-	wChat->setRelativePosition(ResizeWin(305, 615, 1020, 640));
 	wReplaySave->setRelativePosition(ResizeWin(510, 200, 820, 320));
+	
+	wChat->setRelativePosition(ResizeWin(305, 615, 1020, 640, true));
+	ebChatInput->setRelativePosition(recti(3, 2, window_size.Width - wChat->getRelativePosition().UpperLeftCorner.X - 6, 22));
 
 	wPhase->setRelativePosition(Resize(475, 310, 850, 330));
 	btnDP->setRelativePosition(Resize(0, 0, 50, 20));
@@ -1020,10 +1022,17 @@ position2di Game::Resize(s32 x, s32 y, bool reverse)
 	}
 	return position2di(x, y);
 }
-recti Game::ResizeWin(s32 x, s32 y, s32 x2, s32 y2)
+recti Game::ResizeWin(s32 x, s32 y, s32 x2, s32 y2, bool chat)
 {
 	s32 sx = x2 - x;
 	s32 sy = y2 - y;
+	if (chat)
+	{
+		y = window_size.Height - sy;
+		x2 = window_size.Width;
+		y2 = y + sy;
+		return recti(x, y, x2, y2);
+	}
 	x = (x + sx / 2) * window_size.Width / 1024 - sx / 2;
 	y = (y + sy / 2) * window_size.Height / 640 - sy / 2;
 	x2 = sx + x;

@@ -696,9 +696,16 @@ void Game::DrawSpec() {
                 continue;
 
 			int w = textFont->getDimension(chatMsg[i].c_str()).Width;
-			driver->draw2DRectangle(recti(305, 596 - 20 * i, 307 + w, 616 - 20 * i), 0xa0000000, 0xa0000000, 0xa0000000, 0xa0000000);
-			textFont->draw(chatMsg[i].c_str(), rect<s32>(305, 595 - 20 * i, 1020, 615 - 20 * i), 0xff000000, false, false);
-			textFont->draw(chatMsg[i].c_str(), rect<s32>(306, 596 - 20 * i, 1021, 616 - 20 * i), chatColor[chatType[i]], false, false);
+			
+			recti rectloc(305, mainGame->window_size.Height - 45, 307 + w, mainGame->window_size.Height - 25);
+			rectloc -= position2di(0, i * 20);
+			recti msgloc(305, mainGame->window_size.Height - 45, mainGame->window_size.Width - 4, mainGame->window_size.Height - 25);
+			msgloc -= position2di(0, i * 20);
+			recti shadowloc = msgloc + position2di(1, 1);
+
+			driver->draw2DRectangle(rectloc, 0xa0000000, 0xa0000000, 0xa0000000, 0xa0000000);
+			textFont->draw(chatMsg[i].c_str(), msgloc, 0xff000000, false, false);
+			textFont->draw(chatMsg[i].c_str(), shadowloc, chatColor[chatType[i]], false, false);
 		}
 	}
 }
