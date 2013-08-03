@@ -636,7 +636,7 @@ static inline bool CardNameCompare(const wchar_t *sa, const wchar_t *sb)
 	while (sa[i])
 	{
 		ca = towupper(sa[i]);
-		cb = towupper(sb[i]);
+		cb = towupper(sb[j]);
 		if (ca == cb)
 		{
 			j++;
