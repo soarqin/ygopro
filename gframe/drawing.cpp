@@ -504,8 +504,8 @@ void Game::DrawSpec() {
 	if(showcard) {
 		switch(showcard) {
 		case 1: {
-			driver->draw2DImage(imageManager.GetTexture(showcardcode), position2di(574, 150));
-			driver->draw2DImage(imageManager.tMask, recti(574, 150, 574 + (showcarddif > 177 ? 177 : showcarddif), 404),
+			driver->draw2DImage(imageManager.GetTexture(showcardcode), mainGame->Resize(574, 150));
+			driver->draw2DImage(imageManager.tMask, mainGame->ResizeElem(574, 150, 574 + (showcarddif > 177 ? 177 : showcarddif), 404),
 			                    recti(254 - showcarddif, 0, 254 - (showcarddif > 177 ? showcarddif - 177 : 0), 254), 0, 0, true);
 			showcarddif += 15;
 			if(showcarddif >= 254) {
@@ -515,8 +515,8 @@ void Game::DrawSpec() {
 			break;
 		}
 		case 2: {
-			driver->draw2DImage(imageManager.GetTexture(showcardcode), position2di(574, 150));
-			driver->draw2DImage(imageManager.tMask, recti(574 + showcarddif, 150, 761, 404), recti(0, 0, 177 - showcarddif, 254), 0, 0, true);
+			driver->draw2DImage(imageManager.GetTexture(showcardcode), mainGame->Resize(574, 150));
+			driver->draw2DImage(imageManager.tMask, mainGame->ResizeElem(574 + showcarddif, 150, 761, 404), recti(0, 0, 177 - showcarddif, 254), 0, 0, true);
 			showcarddif += 15;
 			if(showcarddif >= 177) {
 				showcard = 0;
@@ -524,8 +524,8 @@ void Game::DrawSpec() {
 			break;
 		}
 		case 3: {
-			driver->draw2DImage(imageManager.GetTexture(showcardcode), position2di(574, 150));
-			driver->draw2DImage(imageManager.tNegated, recti(536 + showcarddif, 141 + showcarddif, 793 - showcarddif, 397 - showcarddif), recti(0, 0, 128, 128), 0, 0, true);
+			driver->draw2DImage(imageManager.GetTexture(showcardcode), mainGame->Resize(574, 150));
+			driver->draw2DImage(imageManager.tNegated, mainGame->ResizeElem(536 + showcarddif, 141 + showcarddif, 793 - showcarddif, 397 - showcarddif), recti(0, 0, 128, 128), 0, 0, true);
 			if(showcarddif < 64)
 				showcarddif += 4;
 			break;
@@ -535,7 +535,7 @@ void Game::DrawSpec() {
 			matManager.c2d[1] = (showcarddif << 24) | 0xffffff;
 			matManager.c2d[2] = (showcarddif << 24) | 0xffffff;
 			matManager.c2d[3] = (showcarddif << 24) | 0xffffff;
-			driver->draw2DImage(imageManager.GetTexture(showcardcode), recti(574, 154, 751, 404),
+			driver->draw2DImage(imageManager.GetTexture(showcardcode), mainGame->ResizeElem(574, 154, 751, 404),
 			                    recti(0, 0, 177, 254), 0, matManager.c2d, true);
 			if(showcarddif < 255)
 				showcarddif += 17;
@@ -546,15 +546,15 @@ void Game::DrawSpec() {
 			matManager.c2d[1] = (showcarddif << 25) | 0xffffff;
 			matManager.c2d[2] = (showcarddif << 25) | 0xffffff;
 			matManager.c2d[3] = (showcarddif << 25) | 0xffffff;
-			driver->draw2DImage(imageManager.GetTexture(showcardcode), recti(662 - showcarddif * 0.69685f, 277 - showcarddif, 662 + showcarddif * 0.69685f, 277 + showcarddif),
+			driver->draw2DImage(imageManager.GetTexture(showcardcode), mainGame->ResizeElem(662 - showcarddif * 0.69685f, 277 - showcarddif, 662 + showcarddif * 0.69685f, 277 + showcarddif),
 			                    recti(0, 0, 177, 254), 0, matManager.c2d, true);
 			if(showcarddif < 127)
 				showcarddif += 9;
 			break;
 		}
 		case 6: {
-			driver->draw2DImage(imageManager.GetTexture(showcardcode), position2di(574, 150));
-			driver->draw2DImage(imageManager.tNumber, recti(536 + showcarddif, 141 + showcarddif, 793 - showcarddif, 397 - showcarddif),
+			driver->draw2DImage(imageManager.GetTexture(showcardcode), mainGame->Resize(574, 150));
+			driver->draw2DImage(imageManager.tNumber, mainGame->ResizeElem(536 + showcarddif, 141 + showcarddif, 793 - showcarddif, 397 - showcarddif),
 			                    recti((showcardp % 5) * 64, (showcardp / 5) * 64, (showcardp % 5 + 1) * 64, (showcardp / 5 + 1) * 64), 0, 0, true);
 			if(showcarddif < 64)
 				showcarddif += 4;
@@ -563,10 +563,10 @@ void Game::DrawSpec() {
 		case 7: {
 			core::position2d<s32> corner[4];
 			float y = sin(showcarddif * 3.1415926f / 180.0f) * 254;
-			corner[0] = core::position2d<s32>(574 - (254 - y) * 0.3f, 404 - y);
-			corner[1] = core::position2d<s32>(751 + (254 - y) * 0.3f, 404 - y);
-			corner[2] = core::position2d<s32>(574, 404);
-			corner[3] = core::position2d<s32>(751, 404);
+			corner[0] = mainGame->Resize(574 - (254 - y) * 0.3f, 404 - y);
+			corner[1] = mainGame->Resize(751 + (254 - y) * 0.3f, 404 - y);
+			corner[2] = mainGame->Resize(574, 404);
+			corner[3] = mainGame->Resize(751, 404);
 			irr::gui::Draw2DImageQuad(driver, imageManager.GetTexture(showcardcode), rect<s32>(0, 0, 177, 254), corner);
 			showcardp++;
 			showcarddif += 9;
@@ -580,8 +580,8 @@ void Game::DrawSpec() {
 		}
 		case 100: {
 			if(showcardp < 60) {
-				driver->draw2DImage(imageManager.tHand[(showcardcode >> 16) & 0x3], position2di(615, showcarddif));
-				driver->draw2DImage(imageManager.tHand[showcardcode & 0x3], position2di(615, 540 - showcarddif));
+				driver->draw2DImage(imageManager.tHand[(showcardcode >> 16) & 0x3], mainGame->Resize(615, showcarddif));
+				driver->draw2DImage(imageManager.tHand[showcardcode & 0x3], mainGame->Resize(615, 540 - showcarddif));
 				float dy = -0.333333f * showcardp + 10;
 				showcardp++;
 				if(showcardp < 30)
@@ -639,20 +639,20 @@ void Game::DrawSpec() {
 			auto pos = lpcFont->getDimension(lstr);
 			if(showcardp < 10) {
 				int alpha = (showcardp * 25) << 24;
-				lpcFont->draw(lstr, recti(671 - pos.Width / 2 - (9 - showcardp) * 40, 271, 970, 350), alpha);
-				lpcFont->draw(lstr, recti(670 - pos.Width / 2 - (9 - showcardp) * 40, 270, 970, 350), alpha | 0xffffff);
+				lpcFont->draw(lstr, mainGame->ResizeElem(671 - pos.Width / 2 - (9 - showcardp) * 40, 271, 970, 350), alpha);
+				lpcFont->draw(lstr, mainGame->ResizeElem(670 - pos.Width / 2 - (9 - showcardp) * 40, 270, 970, 350), alpha | 0xffffff);
 			} else if(showcardp < showcarddif) {
-				lpcFont->draw(lstr, recti(671 - pos.Width / 2, 271, 970, 350), 0xff000000);
-				lpcFont->draw(lstr, recti(670 - pos.Width / 2, 270, 970, 350), 0xffffffff);
+				lpcFont->draw(lstr, mainGame->ResizeElem(671 - pos.Width / 2, 271, 970, 350), 0xff000000);
+				lpcFont->draw(lstr, mainGame->ResizeElem(670 - pos.Width / 2, 270, 970, 350), 0xffffffff);
 				if(dInfo.vic_string && (showcardcode == 1 || showcardcode == 2)) {
 					driver->draw2DRectangle(0xa0000000, recti(540, 320, 800, 340));
-					guiFont->draw(dInfo.vic_string, recti(502, 321, 840, 340), 0xff000000, true, true);
-					guiFont->draw(dInfo.vic_string, recti(500, 320, 840, 340), 0xffffffff, true, true);
+					guiFont->draw(dInfo.vic_string, mainGame->ResizeElem(502, 321, 840, 340), 0xff000000, true, true);
+					guiFont->draw(dInfo.vic_string, mainGame->ResizeElem(500, 320, 840, 340), 0xffffffff, true, true);
 				}
 			} else if(showcardp < showcarddif + 10) {
 				int alpha = ((showcarddif + 10 - showcardp) * 25) << 24;
-				lpcFont->draw(lstr, recti(671 - pos.Width / 2 + (showcardp - showcarddif) * 40, 271, 970, 350), alpha);
-				lpcFont->draw(lstr, recti(670 - pos.Width / 2 + (showcardp - showcarddif) * 40, 270, 970, 350), alpha | 0xffffff);
+				lpcFont->draw(lstr, mainGame->ResizeElem(671 - pos.Width / 2 + (showcardp - showcarddif) * 40, 271, 970, 350), alpha);
+				lpcFont->draw(lstr, mainGame->ResizeElem(670 - pos.Width / 2 + (showcardp - showcarddif) * 40, 270, 970, 350), alpha | 0xffffff);
 			}
 			showcardp++;
 			break;

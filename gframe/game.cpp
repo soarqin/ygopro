@@ -1039,5 +1039,15 @@ recti Game::ResizeWin(s32 x, s32 y, s32 x2, s32 y2, bool chat)
 	y2 = sy + y;
 	return recti(x, y, x2, y2);
 }
+recti Game::ResizeElem(s32 x, s32 y, s32 x2, s32 y2)
+{
+	s32 sx = x2 - x;
+	s32 sy = y2 - y;
+	x = (x + sx / 2 - 100) * window_size.Width / 1024 - sx / 2 + 100;
+	y = y * window_size.Height / 640;
+	x2 = sx + x;
+	y2 = sy + y;
+	return recti(x, y, x2, y2);
+}
 
 }
