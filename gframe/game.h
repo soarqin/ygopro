@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <vector>
 #include <list>
+#include <irrKlang.h>
+#pragma comment(lib, "irrKlang.lib") 
 
 namespace ygo {
 
@@ -352,7 +354,9 @@ public:
 	irr::gui::IGUIButton* btnReplaySwap;
 	//surrender/leave
 	irr::gui::IGUIButton* btnLeaveGame;
-
+	//soundEngine
+	irrklang::ISoundEngine* engineSound;
+	irrklang::ISoundEngine* engineMusic; 
 };
 
 extern Game* mainGame;
