@@ -529,7 +529,7 @@ void Game::MainLoop() {
 		gMutex.Lock();
 		if(dInfo.isStarted) {
 	      if(imageManager.tBackGround2)
-			driver->draw2DImage(imageManager.tBackGround2, recti(0, 0, 1024, 640), recti(0, 0, imageManager.tBackGround->getOriginalSize().Width, imageManager.tBackGround->getOriginalSize().Height));
+			driver->draw2DImage(imageManager.tBackGround2, Resize(0, 0, 1024, 640), recti(0, 0, imageManager.tBackGround->getOriginalSize().Width, imageManager.tBackGround->getOriginalSize().Height));
 			Game::PlayMusic("./sound/song.mp3",true);
 			DrawBackGround();
 			DrawCards();
