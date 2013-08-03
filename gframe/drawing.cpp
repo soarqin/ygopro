@@ -642,12 +642,18 @@ void Game::DrawSpec() {
 				lpcFont->draw(lstr, mainGame->ResizeElem(671 - pos.Width / 2 - (9 - showcardp) * 40, 271, 970, 350), alpha);
 				lpcFont->draw(lstr, mainGame->ResizeElem(670 - pos.Width / 2 - (9 - showcardp) * 40, 270, 970, 350), alpha | 0xffffff);
 			} else if(showcardp < showcarddif) {
+				recti loc = mainGame->ResizeElem(670 - pos.Width / 2, 270, 970, 350);
 				lpcFont->draw(lstr, mainGame->ResizeElem(671 - pos.Width / 2, 271, 970, 350), 0xff000000);
-				lpcFont->draw(lstr, mainGame->ResizeElem(670 - pos.Width / 2, 270, 970, 350), 0xffffffff);
+				lpcFont->draw(lstr, loc, 0xffffffff);
 				if(dInfo.vic_string && (showcardcode == 1 || showcardcode == 2)) {
-					driver->draw2DRectangle(0xa0000000, recti(540, 320, 800, 340));
-					guiFont->draw(dInfo.vic_string, mainGame->ResizeElem(502, 321, 840, 340), 0xff000000, true, true);
-					guiFont->draw(dInfo.vic_string, mainGame->ResizeElem(500, 320, 840, 340), 0xffffffff, true, true);
+					s32 vicx = (260 + pos.Width) / 2 - 260;
+					recti vicloc = recti(loc.UpperLeftCorner.X + vicx, loc.UpperLeftCorner.Y + 50, loc.UpperLeftCorner.X + vicx + 260, loc.UpperLeftCorner.Y + 70);
+					driver->draw2DRectangle(0xa0000000, vicloc);
+					vicloc += position2di(2, 2);
+					guiFont->draw(dInfo.vic_string, vicloc, 0xff000000, true, true);
+					vicloc.UpperLeftCorner.X -= 2;
+					vicloc.UpperLeftCorner.Y -= 1;
+					guiFont->draw(dInfo.vic_string, vicloc, 0xffffffff, true, true);
 				}
 			} else if(showcardp < showcarddif + 10) {
 				int alpha = ((showcarddif + 10 - showcardp) * 25) << 24;
