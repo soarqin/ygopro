@@ -106,9 +106,11 @@ public:
 	int LocalPlayer(int player);
 	const wchar_t* LocalName(int local_player);
 	
+	void OnResize();
 	recti Resize(s32 x, s32 y, s32 x2, s32 y2);
 	recti Resize(s32 x, s32 y, s32 x2, s32 y2, s32 dx, s32 dy, s32 dx2, s32 dy2);
 	position2di Resize(s32 x, s32 y, bool reverse = false);
+	recti ResizeWin(s32 x, s32 y, s32 x2, s32 y2);
 
 	Mutex gMutex;
 	Mutex gBuffer;

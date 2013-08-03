@@ -506,16 +506,9 @@ void Game::MainLoop() {
 	int cur_time = 0;
 	while(device->run()) {
 		dimension2du size = driver->getScreenSize();
-		if (window_size != size)
-		{
+		if (window_size != size) {
 			window_size = size;
-			wPhase->setRelativePosition(Resize(475, 310, 850, 330));
-			btnDP->setRelativePosition(Resize(0, 0, 50, 20));
-			btnSP->setRelativePosition(Resize(65, 0, 115, 20));
-			btnM1->setRelativePosition(Resize(130, 0, 180, 20));
-			btnBP->setRelativePosition(Resize(195, 0, 245, 20));
-			btnM2->setRelativePosition(Resize(260, 0, 310, 20));
-			btnEP->setRelativePosition(Resize(325, 0, 375, 20));
+			OnResize();
 		}
 		if(gameConf.use_d3d)
 			linePattern = (linePattern + 1) % 30;
@@ -966,6 +959,37 @@ int Game::LocalPlayer(int player) {
 const wchar_t* Game::LocalName(int local_player) {
 	return local_player == 0 ? dInfo.hostname : dInfo.clientname;
 }
+void Game::OnResize()
+{
+	wMainMenu->setRelativePosition(ResizeWin(370, 200, 650, 415));
+	wLanWindow->setRelativePosition(ResizeWin(220, 100, 800, 520));
+	wCreateHost->setRelativePosition(ResizeWin(320, 100, 700, 520));
+	wHostPrepare->setRelativePosition(ResizeWin(270, 120, 750, 440));
+	wReplay->setRelativePosition(ResizeWin(220, 100, 800, 520));
+	wSinglePlay->setRelativePosition(ResizeWin(220, 100, 800, 520));
+	wHand->setRelativePosition(ResizeWin(500, 450, 825, 605));
+	wFTSelect->setRelativePosition(ResizeWin(550, 240, 780, 340));
+	wMessage->setRelativePosition(ResizeWin(490, 200, 840, 340));
+	wACMessage->setRelativePosition(ResizeWin(490, 240, 840, 300));
+	wQuery->setRelativePosition(ResizeWin(490, 200, 840, 340));
+	wOptions->setRelativePosition(ResizeWin(490, 200, 840, 340));
+	wPosSelect->setRelativePosition(ResizeWin(340, 200, 935, 410));
+	wCardSelect->setRelativePosition(ResizeWin(320, 100, 1000, 400));
+	wANNumber->setRelativePosition(ResizeWin(550, 200, 780, 295));
+	wANCard->setRelativePosition(ResizeWin(560, 170, 770, 370));
+	wANAttribute->setRelativePosition(ResizeWin(500, 200, 830, 285));
+	wANRace->setRelativePosition(ResizeWin(480, 200, 850, 385));
+	wChat->setRelativePosition(ResizeWin(305, 615, 1020, 640));
+	wReplaySave->setRelativePosition(ResizeWin(510, 200, 820, 320));
+
+	wPhase->setRelativePosition(Resize(475, 310, 850, 330));
+	btnDP->setRelativePosition(Resize(0, 0, 50, 20));
+	btnSP->setRelativePosition(Resize(65, 0, 115, 20));
+	btnM1->setRelativePosition(Resize(130, 0, 180, 20));
+	btnBP->setRelativePosition(Resize(195, 0, 245, 20));
+	btnM2->setRelativePosition(Resize(260, 0, 310, 20));
+	btnEP->setRelativePosition(Resize(325, 0, 375, 20));
+}
 recti Game::Resize(s32 x, s32 y, s32 x2, s32 y2)
 {
 	x = x * window_size.Width / 1024;
@@ -995,6 +1019,16 @@ position2di Game::Resize(s32 x, s32 y, bool reverse)
 		y = y * window_size.Height / 640;
 	}
 	return position2di(x, y);
+}
+recti Game::ResizeWin(s32 x, s32 y, s32 x2, s32 y2)
+{
+	s32 sx = x2 - x;
+	s32 sy = y2 - y;
+	x = (x + sx / 2) * window_size.Width / 1024 - sx / 2;
+	y = (y + sy / 2) * window_size.Height / 640 - sy / 2;
+	x2 = sx + x;
+	y2 = sy + y;
+	return recti(x, y, x2, y2);
 }
 
 }
