@@ -63,7 +63,7 @@ bool Game::Initialize() {
 	textFont = guiFont;
 	smgr = device->getSceneManager();
 	device->setWindowCaption(L"YGOPro DevPro");
-	device->setResizable(false);
+	device->setResizable(true);
 	//main menu
 	wchar_t strbuf[256];
 	myswprintf(strbuf, L"YGOPro DevPro (Version:%X.0%X.%X)", PRO_VERSION >> 12, (PRO_VERSION >> 4) & 0xff, PRO_VERSION & 0xf);
@@ -507,7 +507,18 @@ void Game::MainLoop() {
 	int fps = 0;
 	int cur_time = 0;
 	while(device->run()) {
-		window_size = driver->getScreenSize();
+		dimension2du size = driver->getScreenSize();
+		if (window_size != size)
+		{
+			window_size = size;
+			wPhase->setRelativePosition(Resize(475, 310, 850, 330));
+			btnDP->setRelativePosition(Resize(0, 0, 50, 20));
+			btnSP->setRelativePosition(Resize(65, 0, 115, 20));
+			btnM1->setRelativePosition(Resize(130, 0, 180, 20));
+			btnBP->setRelativePosition(Resize(195, 0, 245, 20));
+			btnM2->setRelativePosition(Resize(260, 0, 310, 20));
+			btnEP->setRelativePosition(Resize(325, 0, 375, 20));
+		}
 		if(gameConf.use_d3d)
 			linePattern = (linePattern + 1) % 30;
 		else
@@ -957,6 +968,14 @@ recti Game::Resize(s32 x, s32 y, s32 x2, s32 y2)
 	y = y * window_size.Height / 640;
 	x2 = x2 * window_size.Width / 1024;
 	y2 = y2 * window_size.Height / 640;
+	return recti(x, y, x2, y2);
+}
+recti Game::Resize(s32 x, s32 y, s32 x2, s32 y2, s32 dx, s32 dy, s32 dx2, s32 dy2)
+{
+	x = x * window_size.Width / 1024 + dx;
+	y = y * window_size.Height / 640 + dy;
+	x2 = x2 * window_size.Width / 1024 + dx2;
+	y2 = y2 * window_size.Height / 640 + dy2;
 	return recti(x, y, x2, y2);
 }
 position2di Game::Resize(s32 x, s32 y, bool reverse)
