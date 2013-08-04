@@ -45,15 +45,19 @@ int main(int argc, char* argv[]) {
 			} else if(!strcmp(argv[i], "-r")) {
 				event.GUIEvent.Caller = ygo::mainGame->btnReplayMode;
 				ygo::mainGame->device->postEventFromUser(event);
-				ygo::mainGame->lstReplayList->setSelected(0);
-				event.GUIEvent.Caller = ygo::mainGame->btnLoadReplay;
-				ygo::mainGame->device->postEventFromUser(event);
+				ygo::mainGame->lstReplayList->setSelected(ygo::mainGame->gameConf.lastreplay);
+				if(ygo::mainGame->lstReplayList->getSelected() != -1){
+					event.GUIEvent.Caller = ygo::mainGame->btnLoadReplay;
+					ygo::mainGame->device->postEventFromUser(event);
+				}
 			} else if(!strcmp(argv[i], "-s")) {
 				event.GUIEvent.Caller = ygo::mainGame->btnServerMode;
 				ygo::mainGame->device->postEventFromUser(event);
-				ygo::mainGame->lstSinglePlayList->setSelected(0);
-				event.GUIEvent.Caller = ygo::mainGame->btnLoadSinglePlay;
-				ygo::mainGame->device->postEventFromUser(event);
+				ygo::mainGame->lstSinglePlayList->setSelected(ygo::mainGame->gameConf.lastpuzzle);
+				if(ygo::mainGame->lstSinglePlayList->getSelected() != -1){
+					event.GUIEvent.Caller = ygo::mainGame->btnLoadSinglePlay;
+					ygo::mainGame->device->postEventFromUser(event);
+				}
 			}
 
 		}
