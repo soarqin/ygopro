@@ -897,7 +897,7 @@ void Game::ShowCardInfo(int code) {
 		stDataInfo->setText(L"");
 		stText->setRelativePosition(irr::core::position2di(15, 60));
 	}
-	SetStaticText(stText, 270, textFont, (wchar_t*)dataManager.GetText(code));
+	SetStaticText(stText, stText->getRelativePosition().getWidth() - 12, textFont, (wchar_t*)dataManager.GetText(code));
 }
 void Game::AddChatMsg(wchar_t* msg, int player) {
 	for(int i = 7; i > 0; --i) {
@@ -1016,6 +1016,28 @@ void Game::OnResize()
 	
 	wChat->setRelativePosition(ResizeWin(305, 615, 1020, 640, true));
 	ebChatInput->setRelativePosition(recti(3, 2, window_size.Width - wChat->getRelativePosition().UpperLeftCorner.X - 6, 22));
+
+	wCardImg->setRelativePosition(Resize(1, 1, 199, 273));
+	imgCard->setRelativePosition(Resize(9, 9, 187, 262));
+	wInfos->setRelativePosition(Resize(1, 275, 301, 639));
+	stName->setRelativePosition(recti(10, 10, 287 * window_size.Width / 1024, 32));
+	stInfo->setRelativePosition(recti(15, 37, 296 * window_size.Width / 1024, 60));
+	stDataInfo->setRelativePosition(recti(15, 60, 296 * window_size.Width / 1024, 83));
+	stText->setRelativePosition(recti(15, 83, 296 * window_size.Width / 1024, 324 * window_size.Height / 640));
+	lstLog->setRelativePosition(Resize(10, 10, 290, 290));
+	btnClearLog->setRelativePosition(Resize(160, 300, 260, 325));
+
+	btnLeaveGame->setRelativePosition(Resize(205, 5, 295, 80));
+	wReplayControl->setRelativePosition(Resize(205, 143, 295, 273));
+	btnReplayStart->setRelativePosition(Resize(5, 5, 85, 25));
+	btnReplayPause->setRelativePosition(Resize(5, 30, 85, 50));
+	btnReplayStep->setRelativePosition(Resize(5, 55, 85, 75));
+	btnReplaySwap->setRelativePosition(Resize(5, 80, 85, 100));
+	btnReplayExit->setRelativePosition(Resize(5, 105, 85, 125));
+	wDeckEdit->setRelativePosition(Resize(309, 8, 605, 130));
+	wFilter->setRelativePosition(Resize(610, 8, 1020, 130));
+
+	scrFilter->setRelativePosition(Resize(999, 161, 1019, 629));
 
 	wPhase->setRelativePosition(Resize(475, 310, 850, 330));
 	btnDP->setRelativePosition(Resize(0, 0, 50, 20));

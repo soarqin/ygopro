@@ -786,44 +786,72 @@ void Game::WaitFrameSignal(int frame) {
 	signalFrame = frame;
 	frameSignal.Wait();
 }
-void Game::DrawThumb(code_pointer cp, position2di pos, std::unordered_map<int, int>* lflist) {
+void Game::DrawThumb(code_pointer cp, position2di pos, std::unordered_map<int, int>* lflist, bool drag) {
 	const int width = 44; //standard pic size, maybe it should be defined in game.h
 	const int height = 64;
 	int code = cp->first;
 	int lcode = cp->second.alias;
 	if(lcode == 0)
 		lcode = code;
-	irr::video::ITexture* img = imageManager.GetTextureThumb(code);
+	irr::video::ITexture* img;
+	if (mainGame->window_size.Width > 1024 || mainGame->window_size.Height > 640)
+		img = imageManager.GetTexture(code);
+	else
+		img = imageManager.GetTextureThumb(code);
 	if(img == NULL)
 		return; //NULL->getSize() will cause a crash
 	dimension2d<u32> size = img->getOriginalSize();
-	driver->draw2DImage(img, rect<s32>(pos.X, pos.Y, pos.X + width, pos.Y + height), rect<s32>(0, 0, size.Width, size.Height));
+
+	if (drag) {
+		recti dragloc = recti(pos.X, pos.Y, pos.X + width * mainGame->window_size.Width / 1024, pos.Y + height * mainGame->window_size.Height / 640);
+		driver->draw2DImage(img, dragloc, rect<s32>(0, 0, size.Width, size.Height));
+	} else {
+		driver->draw2DImage(img, mainGame->Resize(pos.X, pos.Y, pos.X + width, pos.Y + height), rect<s32>(0, 0, size.Width, size.Height));
+	}
 
 	if(lflist->count(lcode)) {
 		switch((*lflist)[lcode]) {
 		case 0:
-			driver->draw2DImage(imageManager.tLim, recti(pos.X, pos.Y, pos.X + 20, pos.Y + 20), recti(0, 0, 64, 64), 0, 0, true);
+			driver->draw2DImage(imageManager.tLim, mainGame->Resize(pos.X, pos.Y, pos.X + 20, pos.Y + 20), recti(0, 0, 64, 64), 0, 0, true);
 			break;
 		case 1:
-			driver->draw2DImage(imageManager.tLim, recti(pos.X, pos.Y, pos.X + 20, pos.Y + 20), recti(64, 0, 128, 64), 0, 0, true);
+			driver->draw2DImage(imageManager.tLim, mainGame->Resize(pos.X, pos.Y, pos.X + 20, pos.Y + 20), recti(64, 0, 128, 64), 0, 0, true);
 			break;
 		case 2:
-			driver->draw2DImage(imageManager.tLim, recti(pos.X, pos.Y, pos.X + 20, pos.Y + 20), recti(0, 64, 64, 128), 0, 0, true);
+			driver->draw2DImage(imageManager.tLim, mainGame->Resize(pos.X, pos.Y, pos.X + 20, pos.Y + 20), recti(0, 64, 64, 128), 0, 0, true);
 			break;
 		}
 	}
 }
+static inline void DrawRectangle(IVideoDriver *driver, recti &position)
+{
+	driver->draw2DRectangle(position, 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
+	position.UpperLeftCorner.X -= 1;
+	position.UpperLeftCorner.Y -= 1;
+	driver->draw2DRectangleOutline(position);
+}
+static inline void DrawShadowA(CGUITTFont *font, const stringw &text, recti &position)
+{
+	font->draw(text, position, 0xff000000, false, true);
+	position += position2di(1, 1);
+	font->draw(text, position, 0xffffffff, false, true);
+}
+static inline void DrawShadowB(CGUITTFont *font, const stringw &text, recti &position)
+{
+	font->draw(text, position, 0xff000000, false, true);
+	position.UpperLeftCorner.X += 1;
+	position.UpperLeftCorner.Y += 1;
+	font->draw(text, position, 0xffffffff, false, true);
+}
 void Game::DrawDeckBd() {
 	wchar_t textBuffer[128];
+	recti loc;
 	//main deck
-	driver->draw2DRectangle(recti(310, 137, 410, 157), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
-	driver->draw2DRectangleOutline(recti(309, 136, 410, 157));
-	textFont->draw(dataManager.GetSysString(1330), recti(314, 136, 409, 156), 0xff000000, false, true);
-	textFont->draw(dataManager.GetSysString(1330), recti(315, 137, 410, 157), 0xffffffff, false, true);
-	numFont->draw(dataManager.numStrings[deckManager.current_deck.main.size()], recti(379, 137, 439, 157), 0xff000000, false, true);
-	numFont->draw(dataManager.numStrings[deckManager.current_deck.main.size()], recti(380, 138, 440, 158), 0xffffffff, false, true);
-	driver->draw2DRectangle(recti(310, 160, 797, 436), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
-	driver->draw2DRectangleOutline(recti(309, 159, 797, 436));
+	DrawRectangle(driver, mainGame->Resize(310, 137, 410, 157));
+	DrawShadowA(textFont, dataManager.GetSysString(1330), mainGame->Resize(314, 136, 409, 156));
+	DrawShadowA(numFont, dataManager.numStrings[deckManager.current_deck.main.size()], mainGame->Resize(379, 137, 439, 157));
+	DrawRectangle(driver, mainGame->Resize(310, 160, 797, 436));
+
 	int lx;
 	float dx;
 	if(deckManager.current_deck.main.size() <= 40) {
@@ -836,62 +864,55 @@ void Game::DrawDeckBd() {
 	for(size_t i = 0; i < deckManager.current_deck.main.size(); ++i) {
 		DrawThumb(deckManager.current_deck.main[i], position2di(314 + (i % lx) * dx, 164 + (i / lx) * 68), deckBuilder.filterList);
 		if(deckBuilder.hovered_pos == 1 && deckBuilder.hovered_seq == (int)i)
-			driver->draw2DRectangleOutline(recti(313 + (i % lx) * dx, 163 + (i / lx) * 68, 359 + (i % lx) * dx, 228 + (i / lx) * 68));
+			driver->draw2DRectangleOutline(mainGame->Resize(313 + (i % lx) * dx, 163 + (i / lx) * 68, 359 + (i % lx) * dx, 228 + (i / lx) * 68));
 	}
+
 	//extra deck
-	driver->draw2DRectangle(recti(310, 440, 410, 460), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
-	driver->draw2DRectangleOutline(recti(309, 439, 410, 460));
-	textFont->draw(dataManager.GetSysString(1331), recti(314, 439, 409, 459), 0xff000000, false, true);
-	textFont->draw(dataManager.GetSysString(1331), recti(315, 440, 410, 460), 0xffffffff, false, true);
-	numFont->draw(dataManager.numStrings[deckManager.current_deck.extra.size()], recti(379, 440, 439, 460), 0xff000000, false, true);
-	numFont->draw(dataManager.numStrings[deckManager.current_deck.extra.size()], recti(380, 441, 440, 461), 0xffffffff, false, true);
-	driver->draw2DRectangle(recti(310, 463, 797, 533), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
-	driver->draw2DRectangleOutline(recti(309, 462, 797, 533));
+	DrawRectangle(driver, mainGame->Resize(310, 440, 410, 460));
+	DrawShadowA(textFont, dataManager.GetSysString(1331), mainGame->Resize(314, 439, 409, 459));
+	DrawShadowA(numFont, dataManager.numStrings[deckManager.current_deck.extra.size()], mainGame->Resize(379, 440, 439, 460));
+	DrawRectangle(driver, mainGame->Resize(310, 463, 797, 533));
+
 	if(deckManager.current_deck.extra.size() <= 10)
 		dx = 436.0f / 9;
 	else dx = 436.0f / (deckManager.current_deck.extra.size() - 1);
 	for(size_t i = 0; i < deckManager.current_deck.extra.size(); ++i) {
 		DrawThumb(deckManager.current_deck.extra[i], position2di(314 + i * dx, 466), deckBuilder.filterList);
 		if(deckBuilder.hovered_pos == 2 && deckBuilder.hovered_seq == (int)i)
-			driver->draw2DRectangleOutline(recti(313 + i * dx, 465, 359 + i * dx, 531));
+			driver->draw2DRectangleOutline(mainGame->Resize(313 + i * dx, 465, 359 + i * dx, 531));
 	}
+
 	//side deck
-	driver->draw2DRectangle(recti(310, 537, 410, 557), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
-	driver->draw2DRectangleOutline(recti(309, 536, 410, 557));
-	textFont->draw(dataManager.GetSysString(1332), recti(314, 536, 409, 556), 0xff000000, false, true);
-	textFont->draw(dataManager.GetSysString(1332), recti(315, 537, 410, 557), 0xffffffff, false, true);
-	numFont->draw(dataManager.numStrings[deckManager.current_deck.side.size()], recti(379, 537, 439, 557), 0xff000000, false, true);
-	numFont->draw(dataManager.numStrings[deckManager.current_deck.side.size()], recti(380, 538, 440, 558), 0xffffffff, false, true);
-	driver->draw2DRectangle(recti(310, 560, 797, 630), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
-	driver->draw2DRectangleOutline(recti(309, 559, 797, 630));
+	DrawRectangle(driver, mainGame->Resize(310, 537, 410, 557));
+	DrawShadowA(textFont, dataManager.GetSysString(1332), mainGame->Resize(314, 536, 409, 556));
+	DrawShadowA(numFont, dataManager.numStrings[deckManager.current_deck.side.size()], mainGame->Resize(379, 537, 439, 557));
+	DrawRectangle(driver, mainGame->Resize(310, 560, 797, 630));
+
 	if(deckManager.current_deck.side.size() <= 10)
 		dx = 436.0f / 9;
 	else dx = 436.0f / (deckManager.current_deck.side.size() - 1);
 	for(size_t i = 0; i < deckManager.current_deck.side.size(); ++i) {
 		DrawThumb(deckManager.current_deck.side[i], position2di(314 + i * dx, 564), deckBuilder.filterList);
 		if(deckBuilder.hovered_pos == 3 && deckBuilder.hovered_seq == (int)i)
-			driver->draw2DRectangleOutline(recti(313 + i * dx, 563, 359 + i * dx, 629));
+			driver->draw2DRectangleOutline(mainGame->Resize(313 + i * dx, 563, 359 + i * dx, 629));
 	}
-	driver->draw2DRectangle(recti(805, 137, 915, 157), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
-	driver->draw2DRectangleOutline(recti(804, 136, 915, 157));
-	textFont->draw(dataManager.GetSysString(1333), recti(809, 136, 914, 156), 0xff000000, false, true);
-	textFont->draw(dataManager.GetSysString(1333), recti(810, 137, 915, 157), 0xffffffff, false, true);
-	numFont->draw(deckBuilder.result_string, recti(874, 136, 934, 156), 0xff000000, false, true);
-	numFont->draw(deckBuilder.result_string, recti(875, 137, 935, 157), 0xffffffff, false, true);
-	driver->draw2DRectangle(recti(805, 160, 1020, 630), 0x400000ff, 0x400000ff, 0x40000000, 0x40000000);
-	driver->draw2DRectangleOutline(recti(804, 159, 1020, 630));
+
+	//search results
+	DrawRectangle(driver, mainGame->Resize(805, 137, 915, 157));
+	DrawShadowA(textFont, dataManager.GetSysString(1333), mainGame->Resize(809, 136, 914, 156));
+	DrawShadowA(numFont, deckBuilder.result_string, mainGame->Resize(874, 136, 934, 156));
+	DrawRectangle(driver, mainGame->Resize(805, 160, 1020, 630));
+
 	for(size_t i = 0; i < 7 && i + mainGame->scrFilter->getPos() < deckBuilder.results.size(); ++i) {
 		code_pointer ptr = deckBuilder.results[i + mainGame->scrFilter->getPos()];
 		if(deckBuilder.hovered_pos == 4 && deckBuilder.hovered_seq == (int)i)
-			driver->draw2DRectangle(0x80000000, recti(806, 164 + i * 66, 1019, 230 + i * 66));
+			driver->draw2DRectangle(0x80000000, mainGame->Resize(806, 164 + i * 66, 1019, 230 + i * 66));
 		DrawThumb(ptr, position2di(810, 165 + i * 66), deckBuilder.filterList);
 		if(ptr->second.type & TYPE_MONSTER) {
 			myswprintf(textBuffer, L"%ls", dataManager.GetName(ptr->first));
-			textFont->draw(textBuffer, recti(859, 164 + i * 66, 955, 185 + i * 66), 0xff000000, false, false);
-			textFont->draw(textBuffer, recti(860, 165 + i * 66, 955, 185 + i * 66), 0xffffffff, false, false);
+			DrawShadowB(textFont, textBuffer, mainGame->Resize(859, 164 + i * 66, 955, 185 + i * 66));
 			myswprintf(textBuffer, L"%ls/%ls \x2605%d", dataManager.FormatAttribute(ptr->second.attribute), dataManager.FormatRace(ptr->second.race), ptr->second.level);
-			textFont->draw(textBuffer, recti(859, 186 + i * 66, 955, 207 + i * 66), 0xff000000, false, false);
-			textFont->draw(textBuffer, recti(860, 187 + i * 66, 955, 207 + i * 66), 0xffffffff, false, false);
+			DrawShadowB(textFont, textBuffer, mainGame->Resize(859, 186 + i * 66, 955, 207 + i * 66));
 			if(ptr->second.attack < 0 && ptr->second.defence < 0)
 				myswprintf(textBuffer, L"?/?");
 			else if(ptr->second.attack < 0)
@@ -903,26 +924,22 @@ void Game::DrawDeckBd() {
 				wcscat(textBuffer, L" [OCG]");
 			else if((ptr->second.ot & 0x3) == 2)
 				wcscat(textBuffer, L" [TCG]");
-			textFont->draw(textBuffer, recti(859, 208 + i * 66, 955, 229 + i * 66), 0xff000000, false, false);
-			textFont->draw(textBuffer, recti(860, 209 + i * 66, 955, 229 + i * 66), 0xffffffff, false, false);
+			DrawShadowB(textFont, textBuffer, mainGame->Resize(859, 208 + i * 66, 955, 229 + i * 66));
 		} else {
 			myswprintf(textBuffer, L"%ls", dataManager.GetName(ptr->first));
-			textFont->draw(textBuffer, recti(859, 164 + i * 66, 955, 185 + i * 66), 0xff000000, false, false);
-			textFont->draw(textBuffer, recti(860, 165 + i * 66, 955, 185 + i * 66), 0xffffffff, false, false);
+			DrawShadowB(textFont, textBuffer, mainGame->Resize(859, 164 + i * 66, 955, 185 + i * 66));
 			const wchar_t* ptype = dataManager.FormatType(ptr->second.type);
-			textFont->draw(ptype, recti(859, 186 + i * 66, 955, 207 + i * 66), 0xff000000, false, false);
-			textFont->draw(ptype, recti(860, 187 + i * 66, 955, 207 + i * 66), 0xffffffff, false, false);
+			DrawShadowB(textFont, textBuffer, mainGame->Resize(859, 186 + i * 66, 955, 207 + i * 66));
 			textBuffer[0] = 0;
 			if((ptr->second.ot & 0x3) == 1)
 				wcscat(textBuffer, L"[OCG]");
 			else if((ptr->second.ot & 0x3) == 2)
 				wcscat(textBuffer, L"[TCG]");
-			textFont->draw(textBuffer, recti(859, 208 + i * 66, 955, 229 + i * 66), 0xff000000, false, false);
-			textFont->draw(textBuffer, recti(860, 209 + i * 66, 955, 229 + i * 66), 0xffffffff, false, false);
+			DrawShadowB(textFont, textBuffer, mainGame->Resize(859, 208 + i * 66, 955, 229 + i * 66));
 		}
 	}
 	if(deckBuilder.is_draging) {
-		DrawThumb(deckBuilder.draging_pointer, position2di(deckBuilder.dragx - 22, deckBuilder.dragy - 32), deckBuilder.filterList);
+		DrawThumb(deckBuilder.draging_pointer, position2di(deckBuilder.dragx - 22, deckBuilder.dragy - 32), deckBuilder.filterList, true);
 	}
 }
 }
