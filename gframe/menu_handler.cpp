@@ -179,7 +179,10 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
 			}
 			case BUTTON_CANCEL_REPLAY: {
 				mainGame->HideElement(mainGame->wReplay);
-				mainGame->ShowElement(mainGame->wMainMenu);
+				if (exit_on_return)
+					mainGame->device->closeDevice();
+				else
+					mainGame->ShowElement(mainGame->wMainMenu);
 				break;
 			}
 			case BUTTON_LOAD_SINGLEPLAY: {
