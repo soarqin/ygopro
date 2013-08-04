@@ -683,7 +683,10 @@ void DuelClient::HandleSTOCPacketLan(char* data, unsigned int len) {
 		STOC_HS_WatchChange* pkt = (STOC_HS_WatchChange*)pdata;
 		watching = pkt->watch_count;
 		wchar_t watchbuf[32];
-		myswprintf(watchbuf, L"%ls%d", dataManager.GetSysString(1253), watching);
+		if (watching > 0)
+			myswprintf(watchbuf, L"%ls%d", dataManager.GetSysString(1253), watching);
+		else
+			myswprintf(watchbuf, L"");
 		mainGame->gMutex.Lock();
 		mainGame->stHostPrepOB->setText(watchbuf);
 		mainGame->gMutex.Unlock();
