@@ -32,6 +32,8 @@ struct Config {
 	bool nodelay;
 	bool enablesound;
 	bool enablemusic;
+	bool fullscreen;
+	bool useskin;
 };
 
 struct DuelInfo {

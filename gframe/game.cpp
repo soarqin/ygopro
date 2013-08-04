@@ -737,12 +737,14 @@ void Game::LoadConfig() {
 	gameConf.nodelay = false;
 	gameConf.enablemusic = true;
 	gameConf.enablesound = true;
+	gameConf.fullscreen = false;
+	gameConf.useskin = false;
 	fseek(fp, 0, SEEK_END);
 	int fsize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 	while(ftell(fp) < fsize) {
 		fgets(linebuf, 250, fp);
-		sscanf(linebuf, "%s = %s", strbuf, valbuf);
+		sscanf(linebuf, "%s = %99[^\n]", strbuf, valbuf);
 		if(!strcmp(strbuf, "antialias")) {
 			gameConf.antialias = atoi(valbuf);
 		} else if(!strcmp(strbuf, "use_d3d")) {
@@ -759,12 +761,14 @@ void Game::LoadConfig() {
 			BufferIO::DecodeUTF8(valbuf, wstr);
 			BufferIO::CopyWStr(wstr, gameConf.lastdeck, 64);
 		} else if(!strcmp(strbuf, "textfont")) {
+			sscanf(linebuf, "%s = %s", strbuf, valbuf);
 			BufferIO::DecodeUTF8(valbuf, wstr);
 			int textfontsize;
 			sscanf(linebuf, "%s = %s %d", strbuf, valbuf, &textfontsize);
 			gameConf.textfontsize = textfontsize;
 			BufferIO::CopyWStr(wstr, gameConf.textfont, 256);
 		} else if(!strcmp(strbuf, "numfont")) {
+			sscanf(linebuf, "%s = %s", strbuf, valbuf);
 			BufferIO::DecodeUTF8(valbuf, wstr);
 			BufferIO::CopyWStr(wstr, gameConf.numfont, 256);
 		} else if(!strcmp(strbuf, "serverport")) {
@@ -786,6 +790,10 @@ void Game::LoadConfig() {
 			gameConf.autochain = atoi(valbuf) > 0;
 		} else if(!strcmp(strbuf,"no_delay_for_chain")){
 			gameConf.nodelay = atoi(valbuf) > 0;
+		} else if(!strcmp(strbuf,"use_skin")){
+			gameConf.useskin = atoi(valbuf) > 0;
+		} else if(!strcmp(strbuf,"fullscreen")){
+			gameConf.fullscreen = atoi(valbuf) > 0;
 		}
 	}
 	fclose(fp);
