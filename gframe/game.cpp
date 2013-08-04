@@ -33,6 +33,19 @@ bool Game::Initialize() {
 	device = irr::createDeviceEx(params);
 	if(!device)
 		return false;
+
+	// Apply skin
+	if (gameConf.skin_index >= 0)
+	{
+		skinSystem = new CGUISkinSystem("skins", device);
+		core::array<core::stringw> skins = skinSystem->listSkins();
+		if (gameConf.skin_index < skins.size())
+		{
+			int index = skins.size() - gameConf.skin_index - 1; // reverse index
+			skinSystem->applySkin(skins[index].c_str());
+		}
+	}
+
 	linePattern = 0x0f0f;
 	waitFrame = 0;
 	signalFrame = 0;
@@ -737,6 +750,7 @@ void Game::LoadConfig() {
 	gameConf.nodelay = false;
 	gameConf.enablemusic = true;
 	gameConf.enablesound = true;
+	gameConf.skin_index = -1;
 	fseek(fp, 0, SEEK_END);
 	int fsize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
@@ -786,6 +800,8 @@ void Game::LoadConfig() {
 			gameConf.autochain = atoi(valbuf) > 0;
 		} else if(!strcmp(strbuf,"no_delay_for_chain")){
 			gameConf.nodelay = atoi(valbuf) > 0;
+		} else if(!strcmp(strbuf,"skin_index")){
+			gameConf.skin_index = atoi(valbuf);
 		}
 	}
 	fclose(fp);

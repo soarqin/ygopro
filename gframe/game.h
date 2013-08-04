@@ -9,7 +9,8 @@
 #include <vector>
 #include <list>
 #include <irrKlang.h>
-#pragma comment(lib, "irrKlang.lib") 
+#pragma comment(lib, "irrKlang.lib")
+#include "CGUISkinSystem/CGUISkinSystem.h"
 
 namespace ygo {
 
@@ -32,6 +33,7 @@ struct Config {
 	bool nodelay;
 	bool enablesound;
 	bool enablemusic;
+	int skin_index;
 };
 
 struct DuelInfo {
@@ -157,6 +159,8 @@ public:
 	bool is_siding;
 
 	irr::core::dimension2d<irr::u32> window_size;
+
+	CGUISkinSystem *skinSystem;
 
 	ClientField dField;
 	DeckBuilder deckBuilder;
