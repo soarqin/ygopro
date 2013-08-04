@@ -101,11 +101,15 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 				if(mainGame->dInfo.player_type == 7) {
 					DuelClient::StopClient();
 					mainGame->dInfo.isStarted = false;
-					mainGame->device->setEventReceiver(&mainGame->menuHandler);
-					mainGame->btnCreateHost->setEnabled(true);
-					mainGame->btnJoinHost->setEnabled(true);
-					mainGame->btnJoinCancel->setEnabled(true);
-					mainGame->ShowElement(mainGame->wLanWindow);
+					if (exit_on_return)
+						mainGame->device->closeDevice();
+					else {
+						mainGame->device->setEventReceiver(&mainGame->menuHandler);
+						mainGame->btnCreateHost->setEnabled(true);
+						mainGame->btnJoinHost->setEnabled(true);
+						mainGame->btnJoinCancel->setEnabled(true);
+						mainGame->ShowElement(mainGame->wLanWindow);
+					}
 				} else {
 					DuelClient::SendPacketToServer(CTOS_SURRENDER);
 					if(panel)
