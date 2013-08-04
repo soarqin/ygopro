@@ -731,6 +731,8 @@ void Game::LoadConfig() {
 	gameConf.lastip[0] = 0;
 	gameConf.lastport[0] = 0;
 	gameConf.roompass[0] = 0;
+	gameConf.lastreplay[0] = 0;
+	gameConf.lastpuzzle[0] = 0;
 	gameConf.autoplace = true;
 	gameConf.randomplace = false;
 	gameConf.autochain = true;
@@ -794,6 +796,12 @@ void Game::LoadConfig() {
 			gameConf.useskin = atoi(valbuf) > 0;
 		} else if(!strcmp(strbuf,"fullscreen")){
 			gameConf.fullscreen = atoi(valbuf) > 0;
+		} else if(!strcmp(strbuf,"lastpuzzle")){
+			BufferIO::DecodeUTF8(valbuf, wstr);
+			BufferIO::CopyWStr(wstr, gameConf.lastpuzzle, 256);
+		} else if(!strcmp(strbuf,"lastreplay")){
+			BufferIO::DecodeUTF8(valbuf, wstr);
+			BufferIO::CopyWStr(wstr, gameConf.lastreplay, 256);
 		}
 	}
 	fclose(fp);

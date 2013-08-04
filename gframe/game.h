@@ -26,6 +26,8 @@ struct Config {
 	wchar_t textfont[256];
 	wchar_t numfont[256];
 	wchar_t roompass[20];
+	wchar_t lastreplay[256];
+	wchar_t lastpuzzle[256];
 	bool autoplace;
 	bool randomplace;
 	bool autochain;
