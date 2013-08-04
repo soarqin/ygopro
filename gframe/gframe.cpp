@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
 #endif //_WIN32
 	ygo::Game _game;
 	ygo::mainGame = &_game;
+	_game.window_size = dimension2du(1024, 640);
 	if(!ygo::mainGame->Initialize())
 		return 0;
 
