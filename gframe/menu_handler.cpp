@@ -31,32 +31,7 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
 				break;
 			}
 			case BUTTON_JOIN_HOST: {
-				char ip[20];
-				int i = 0;
-				wchar_t* pstr = (wchar_t *)mainGame->ebJoinIP->getText();
-				while(*pstr && i < 16)
-					ip[i++] = *pstr++;
-				ip[i] = 0;
-
-                struct addrinfo hints;
-                 memset(&hints, 0, sizeof(struct addrinfo));
-                hints.ai_family = AF_INET;    /* Allow IPv4 or IPv6 */
-                hints.ai_socktype = SOCK_STREAM; /* Datagram socket */
-                hints.ai_flags = AI_PASSIVE;    /* For wildcard IP address */
-                hints.ai_protocol = 0;          /* Any protocol */
-                hints.ai_canonname = NULL;
-                hints.ai_addr = NULL;
-                hints.ai_next = NULL;
-		BufferIO::CopyWStr((wchar_t *)mainGame->ebJoinIP->getText(),ip,20);
-                unsigned int remote_addr = htonl(inet_addr(ip));
-				unsigned int remote_port = _wtoi(mainGame->ebJoinPort->getText());
-				BufferIO::CopyWStr(mainGame->ebJoinIP->getText(), mainGame->gameConf.lastip, 20);
-				BufferIO::CopyWStr(mainGame->ebJoinPort->getText(), mainGame->gameConf.lastport, 20);
-				if(DuelClient::StartClient(remote_addr, remote_port, false)) {
-					mainGame->btnCreateHost->setEnabled(false);
-					mainGame->btnJoinHost->setEnabled(false);
-					mainGame->btnJoinCancel->setEnabled(false);
-				}
+				OnJoinHost();
 				break;
 			}
 			case BUTTON_JOIN_CANCEL: {
@@ -368,6 +343,35 @@ bool MenuHandler::OnEvent(const irr::SEvent& event) {
 	default: break;
 	}
 	return false;
+}
+void MenuHandler::OnJoinHost()
+{
+	char ip[20];
+	int i = 0;
+	wchar_t* pstr = (wchar_t *)mainGame->ebJoinIP->getText();
+	while(*pstr && i < 16)
+		ip[i++] = *pstr++;
+	ip[i] = 0;
+
+	struct addrinfo hints;
+	memset(&hints, 0, sizeof(struct addrinfo));
+	hints.ai_family = AF_INET;    /* Allow IPv4 or IPv6 */
+	hints.ai_socktype = SOCK_STREAM; /* Datagram socket */
+	hints.ai_flags = AI_PASSIVE;    /* For wildcard IP address */
+	hints.ai_protocol = 0;          /* Any protocol */
+	hints.ai_canonname = NULL;
+	hints.ai_addr = NULL;
+	hints.ai_next = NULL;
+	BufferIO::CopyWStr((wchar_t *)mainGame->ebJoinIP->getText(),ip,20);
+	unsigned int remote_addr = htonl(inet_addr(ip));
+	unsigned int remote_port = _wtoi(mainGame->ebJoinPort->getText());
+	BufferIO::CopyWStr(mainGame->ebJoinIP->getText(), mainGame->gameConf.lastip, 20);
+	BufferIO::CopyWStr(mainGame->ebJoinPort->getText(), mainGame->gameConf.lastport, 20);
+	if(DuelClient::StartClient(remote_addr, remote_port, false)) {
+		mainGame->btnCreateHost->setEnabled(false);
+		mainGame->btnJoinHost->setEnabled(false);
+		mainGame->btnJoinCancel->setEnabled(false);
+	}
 }
 
 }

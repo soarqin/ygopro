@@ -1,6 +1,7 @@
 #include "config.h"
 #include "game.h"
 #include "data_manager.h"
+#include "menu_handler.h"
 #include <event2/thread.h>
 
 int enable_log = 0;
@@ -34,11 +35,8 @@ int main(int argc, char* argv[]) {
 			event.EventType = irr::EET_GUI_EVENT;
 			event.GUIEvent.EventType = irr::gui::EGET_BUTTON_CLICKED;
 			if(!strcmp(argv[i], "-j")) {
-				event.GUIEvent.Caller = ygo::mainGame->btnLanMode;
-				ygo::mainGame->device->postEventFromUser(event);
-				//TODO: wait for wLanWindow show. if network connection faster than wLanWindow, wLanWindow will still show on duel scene.
-				event.GUIEvent.Caller = ygo::mainGame->btnJoinHost;
-				ygo::mainGame->device->postEventFromUser(event);
+				ygo::mainGame->wMainMenu->setVisible(false);
+				ygo::mainGame->menuHandler.OnJoinHost();
 			} else if(!strcmp(argv[i], "-d")) {
 				event.GUIEvent.Caller = ygo::mainGame->btnDeckEdit;
 				ygo::mainGame->device->postEventFromUser(event);
