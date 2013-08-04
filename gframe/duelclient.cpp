@@ -641,7 +641,6 @@ void DuelClient::HandleSTOCPacketLan(char* data, unsigned int len) {
 		break;
 	}
 	case STOC_HS_PLAYER_CHANGE: {
-		mainGame->PlaySoundA("./sound/playerenter.wav");
 		STOC_HS_PlayerChange* pkt = (STOC_HS_PlayerChange*)pdata;
 		unsigned char pos = (pkt->status >> 4) & 0xf;
 		unsigned char state = pkt->status & 0xf;
@@ -649,6 +648,7 @@ void DuelClient::HandleSTOCPacketLan(char* data, unsigned int len) {
 			break;
 		mainGame->gMutex.Lock();
 		if(state < 8) {
+			mainGame->PlaySoundA("./sound/playerenter.wav");
 			wchar_t* prename = (wchar_t*)mainGame->stHostPrepDuelist[pos]->getText();
 			mainGame->stHostPrepDuelist[state]->setText(prename);
 			mainGame->stHostPrepDuelist[pos]->setText(L"");
