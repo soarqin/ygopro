@@ -1013,7 +1013,8 @@ void Game::OnResize()
 	wANAttribute->setRelativePosition(ResizeWin(500, 200, 830, 285));
 	wANRace->setRelativePosition(ResizeWin(480, 200, 850, 385));
 	wReplaySave->setRelativePosition(ResizeWin(510, 200, 820, 320));
-	
+	stHintMsg->setRelativePosition(ResizeWin(500, 60, 820, 90));
+
 	wChat->setRelativePosition(ResizeWin(305, 615, 1020, 640, true));
 	ebChatInput->setRelativePosition(recti(3, 2, window_size.Width - wChat->getRelativePosition().UpperLeftCorner.X - 6, 22));
 
