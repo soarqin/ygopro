@@ -797,22 +797,26 @@ void Game::LoadConfig() {
 		} else if(!strcmp(strbuf, "roompass")) {
 			BufferIO::DecodeUTF8(valbuf, wstr);
 			BufferIO::CopyWStr(wstr, gameConf.roompass, 20);
-		} else if(!strcmp(strbuf,"auto_card_placing")){
+		} else if(!strcmp(strbuf,"auto_card_placing")) {
 			gameConf.autoplace = atoi(valbuf) > 0;
-		} else if(!strcmp(strbuf,"random_card_placing")){
+		} else if(!strcmp(strbuf,"random_card_placing")) {
 			gameConf.randomplace = atoi(valbuf) > 0;
-		} else if(!strcmp(strbuf,"auto_chain_order")){
+		} else if(!strcmp(strbuf,"auto_chain_order")) {
 			gameConf.autochain = atoi(valbuf) > 0;
-		} else if(!strcmp(strbuf,"no_delay_for_chain")){
+		} else if(!strcmp(strbuf,"no_delay_for_chain")) {
 			gameConf.nodelay = atoi(valbuf) > 0;
-		} else if(!strcmp(strbuf,"skin_index")){
+		} else if(!strcmp(strbuf,"skin_index")) {
 			gameConf.skin_index = atoi(valbuf);
-		} else if(!strcmp(strbuf,"fullscreen")){
+		} else if(!strcmp(strbuf,"fullscreen")) {
 			gameConf.fullscreen = atoi(valbuf) > 0;
-		} else if(!strcmp(strbuf,"lastpuzzle")){
+		} else if(!strcmp(strbuf,"enable_music")) {
+			gameConf.enablemusic = atoi(valbuf) > 0;
+		} else if(!strcmp(strbuf,"enable_sound")) {
+			gameConf.enablesound = atoi(valbuf) > 0;
+		} else if(!strcmp(strbuf,"lastpuzzle")) {
 			BufferIO::DecodeUTF8(valbuf, wstr);
 			BufferIO::CopyWStr(wstr, gameConf.lastpuzzle, 256);
-		} else if(!strcmp(strbuf,"lastreplay")){
+		} else if(!strcmp(strbuf,"lastreplay")) {
 			BufferIO::DecodeUTF8(valbuf, wstr);
 			BufferIO::CopyWStr(wstr, gameConf.lastreplay, 256);
 		}
