@@ -63,7 +63,26 @@ void Game::DrawBackGround() {
 //	driver->drawVertexPrimitiveList(matManager.vBackLine, 76, matManager.iBackLine, 58, irr::video::EVT_STANDARD, irr::scene::EPT_LINES);
 	//draw field
 	driver->setTransform(irr::video::ETS_WORLD, irr::core::IdentityMatrix);
-	matManager.mTexture.setTexture(0, imageManager.tField);
+
+	//draw field spell card
+	int fieldCode = -1;
+	bool drawField = false;
+	if (mainGame->dField.szone[0][5]) {
+		fieldCode = mainGame->dField.szone[0][5]->code;
+	} else if (mainGame->dField.szone[1][5]) {
+		fieldCode = mainGame->dField.szone[1][5]->code;
+	}
+	if (fieldCode > 0) {
+		ITexture *texture = imageManager.GetTextureField(fieldCode);
+		if (texture != NULL) {
+			drawField = true;
+			matManager.mTexture.setTexture(0, imageManager.GetTextureField(fieldCode));
+			driver->setMaterial(matManager.mTexture);
+			driver->drawVertexPrimitiveList(matManager.vFieldSpell, 4, matManager.iRectangle, 2);
+		}
+	}
+
+	matManager.mTexture.setTexture(0, drawField ? imageManager.tFieldTransparent : imageManager.tField);
 	driver->setMaterial(matManager.mTexture);
 	driver->drawVertexPrimitiveList(matManager.vField, 4, matManager.iRectangle, 2);
 	driver->setMaterial(matManager.mBackLine);
