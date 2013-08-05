@@ -349,6 +349,17 @@ public:
 	irr::gui::IGUIButton* btnDBExit;
 	irr::gui::IGUIButton* btnSideOK;
 	irr::gui::IGUIEditBox* ebDeckname;
+	//deck edit labels
+	irr::gui::IGUIStaticText* stLabel1;
+	irr::gui::IGUIStaticText* stLabel2;
+	irr::gui::IGUIStaticText* stLabel3;
+	irr::gui::IGUIStaticText* stLabel4;
+	irr::gui::IGUIStaticText* stLabel5;
+	irr::gui::IGUIStaticText* stLabel6;
+	irr::gui::IGUIStaticText* stLabel7;
+	irr::gui::IGUIStaticText* stLabel8;
+	irr::gui::IGUIStaticText* stLabel9;
+	irr::gui::IGUIStaticText* stLabel10;
 	//filter
 	irr::gui::IGUIStaticText* wFilter;
 	irr::gui::IGUIScrollBar* scrFilter;
