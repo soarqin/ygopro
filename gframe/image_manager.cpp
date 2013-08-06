@@ -22,7 +22,9 @@ bool ImageManager::Initial() {
 	tHand[1] = driver->getTexture("textures/f2.jpg");
 	tHand[2] = driver->getTexture("textures/f3.jpg");
 	tBackGround = driver->getTexture("textures/bg.jpg");
+	tBackGround2 = driver->getTexture("textures/bg2.jpg"); 
 	tField = driver->getTexture("textures/field.png");
+	tFieldTransparent = driver->getTexture("textures/field-transparent.png");
 	return true;
 }
 void ImageManager::SetDevice(irr::IrrlichtDevice* dev) {
@@ -94,5 +96,27 @@ irr::video::ITexture* ImageManager::GetTextureThumb(int code) {
 		return tit->second;
 	else
 		return tUnknown;
+}
+irr::video::ITexture* ImageManager::GetTextureField(int code) {
+	if(code == 0)
+		return NULL;
+	ScopedLock lk(mutex);
+	auto tit = tFields.find(code);
+	if(tit == tFields.end()) {
+		char file[256];
+		sprintf(file, "pics/field/%d.png", code);
+		irr::video::ITexture* img = driver->getTexture(file);
+		if(img == NULL) {
+			tFields[code] = NULL;
+			return NULL;
+		} else {
+			tFields[code] = img;
+			return img;
+		}
+	}
+	if(tit->second)
+		return tit->second;
+	else
+		return NULL;
 }
 }

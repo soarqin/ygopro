@@ -228,6 +228,22 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 			}
 			break;
 		}
+		case irr::gui::EGET_CHECKBOX_CHANGED:{
+			s32 id = event.GUIEvent.Caller->getID();
+			switch(id) {
+			case CHECKBOX_ENABLE_SOUND:{
+				mainGame->gameConf.enablesound = mainGame->chkEnableSound->isChecked();
+				break;
+			}
+			case CHECKBOX_ENABLE_MUSIC:{
+				mainGame->gameConf.enablemusic = mainGame->chkEnableMusic->isChecked();
+				if(!mainGame->gameConf.enablemusic)
+					mainGame->engineMusic->stopAllSounds();
+				break;
+		    }
+			}
+			break;
+		}
 		case irr::gui::EGET_COMBO_BOX_CHANGED: {
 			switch(id) {
 			case COMBOBOX_DBLFLIST: {
@@ -513,8 +529,10 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 			break;
 		}
 		case irr::EMIE_MOUSE_MOVED: {
-			int x = event.MouseInput.X;
-			int y = event.MouseInput.Y;
+			position2di pos = mainGame->Resize(event.MouseInput.X, event.MouseInput.Y, true);
+			position2di mousepos(event.MouseInput.X, event.MouseInput.Y);
+			s32 x = pos.X;
+			s32 y = pos.Y;
 			int pre_code = hovered_code;
 			if(x >= 314 && x <= 794 && y >= 164 && y <= 435) {
 				int lx = 10, px, py = (y - 164) / 68;
@@ -573,8 +591,8 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 				hovered_code = 0;
 			}
 			if(is_draging) {
-				dragx = x;
-				dragy = y;
+				dragx = mousepos.X;
+				dragy = mousepos.Y;
 			}
 			if(!is_draging && pre_code != hovered_code) {
 				if(hovered_code) {
@@ -623,6 +641,33 @@ bool DeckBuilder::OnEvent(const irr::SEvent& event) {
 	}
 	return false;
 }
+
+static inline bool CardNameCompare(const wchar_t *sa, const wchar_t *sb)
+{
+	int i = 0;
+	int j = 0;
+	wchar_t ca;
+	wchar_t cb;
+
+	if (!sa || !sb)
+		return false;
+	while (sa[i])
+	{
+		ca = towupper(sa[i]);
+		cb = towupper(sb[j]);
+		if (ca == cb)
+		{
+			j++;
+			if (!sb[j])
+				return true;
+		}
+		else
+			j = 0;
+		i++;
+	}
+	return false;
+}
+
 void DeckBuilder::FilterCards() {
 	results.clear();
 	const wchar_t* pstr = mainGame->ebCardName->getText();
@@ -696,9 +741,11 @@ void DeckBuilder::FilterCards() {
 				continue;
 			if(filter_lm == 5 && data.ot != 2)
 				continue;
+			if(filter_lm == 6 && data.ot != 4)
+				continue;
 		}
 		if(pstr) {
-			if(wcsstr(text.name, pstr) == 0 && wcsstr(text.text, pstr) == 0)
+			if (!CardNameCompare(text.name, pstr) && !CardNameCompare(text.text, pstr))
 				continue;
 		}
 		results.push_back(ptr);

@@ -8,6 +8,9 @@
 #include <unordered_map>
 #include <vector>
 #include <list>
+#include <irrKlang.h>
+#pragma comment(lib, "irrKlang.lib")
+#include "CGUISkinSystem/CGUISkinSystem.h"
 
 namespace ygo {
 
@@ -24,6 +27,16 @@ struct Config {
 	wchar_t textfont[256];
 	wchar_t numfont[256];
 	wchar_t roompass[20];
+	wchar_t lastreplay[256];
+	wchar_t lastpuzzle[256];
+	bool autoplace;
+	bool randomplace;
+	bool autochain;
+	bool nodelay;
+	bool enablesound;
+	bool enablemusic;
+	int skin_index;
+	bool fullscreen;
 };
 
 struct DuelInfo {
@@ -84,7 +97,7 @@ public:
 	void HideElement(irr::gui::IGUIElement* element, bool set_action = false);
 	void PopupElement(irr::gui::IGUIElement* element, int hideframe = 0);
 	void WaitFrameSignal(int frame);
-	void DrawThumb(code_pointer cp, position2di pos, std::unordered_map<int, int>* lflist);
+	void DrawThumb(code_pointer cp, position2di pos, std::unordered_map<int, int>* lflist, bool drag = false);
 	void DrawDeckBd();
 	void LoadConfig();
 	void SaveConfig();
@@ -92,9 +105,18 @@ public:
 	void AddChatMsg(wchar_t* msg, int player);
 	void ClearTextures();
 	void CloseDuelWindow();
+	void PlayMusic(char* song, bool loop);
+	void PlaySound(char* sound);
 
 	int LocalPlayer(int player);
 	const wchar_t* LocalName(int local_player);
+	
+	void OnResize();
+	recti Resize(s32 x, s32 y, s32 x2, s32 y2);
+	recti Resize(s32 x, s32 y, s32 x2, s32 y2, s32 dx, s32 dy, s32 dx2, s32 dy2);
+	position2di Resize(s32 x, s32 y, bool reverse = false);
+	recti ResizeWin(s32 x, s32 y, s32 x2, s32 y2, bool chat = false);
+	recti ResizeElem(s32 x, s32 y, s32 x2, s32 y2);
 
 	Mutex gMutex;
 	Mutex gBuffer;
@@ -139,6 +161,10 @@ public:
 	bool is_building;
 	bool is_siding;
 
+	irr::core::dimension2d<irr::u32> window_size;
+
+	CGUISkinSystem *skinSystem;
+
 	ClientField dField;
 	DeckBuilder deckBuilder;
 	MenuHandler menuHandler;
@@ -169,7 +195,9 @@ public:
 	irr::gui::IGUICheckBox* chkAutoPos;
 	irr::gui::IGUICheckBox* chkRandomPos;
 	irr::gui::IGUICheckBox* chkAutoChain;
-	irr::gui::IGUICheckBox* chkWaitChain;
+	irr::gui::IGUICheckBox* chkWaitChain;	
+	irr::gui::IGUICheckBox* chkEnableSound;
+	irr::gui::IGUICheckBox* chkEnableMusic;
 	irr::gui::IGUIListBox* lstLog;
 	irr::gui::IGUIButton* btnClearLog;
 	irr::gui::IGUIButton* btnSaveLog;
@@ -321,6 +349,17 @@ public:
 	irr::gui::IGUIButton* btnDBExit;
 	irr::gui::IGUIButton* btnSideOK;
 	irr::gui::IGUIEditBox* ebDeckname;
+	//deck edit labels
+	irr::gui::IGUIStaticText* stLabel1;
+	irr::gui::IGUIStaticText* stLabel2;
+	irr::gui::IGUIStaticText* stLabel3;
+	irr::gui::IGUIStaticText* stLabel4;
+	irr::gui::IGUIStaticText* stLabel5;
+	irr::gui::IGUIStaticText* stLabel6;
+	irr::gui::IGUIStaticText* stLabel7;
+	irr::gui::IGUIStaticText* stLabel8;
+	irr::gui::IGUIStaticText* stLabel9;
+	irr::gui::IGUIStaticText* stLabel10;
 	//filter
 	irr::gui::IGUIStaticText* wFilter;
 	irr::gui::IGUIScrollBar* scrFilter;
@@ -352,7 +391,9 @@ public:
 	irr::gui::IGUIButton* btnReplaySwap;
 	//surrender/leave
 	irr::gui::IGUIButton* btnLeaveGame;
-
+	//soundEngine
+	irrklang::ISoundEngine* engineSound;
+	irrklang::ISoundEngine* engineMusic; 
 };
 
 extern Game* mainGame;
@@ -461,4 +502,6 @@ extern Game* mainGame;
 #define LISTBOX_SINGLEPLAY_LIST		350
 #define BUTTON_LOAD_SINGLEPLAY		351
 #define BUTTON_CANCEL_SINGLEPLAY	352
+#define CHECKBOX_ENABLE_SOUND		353
+#define CHECKBOX_ENABLE_MUSIC		354
 #endif // GAME_H

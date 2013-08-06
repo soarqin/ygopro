@@ -1,6 +1,7 @@
 #include "config.h"
 #include "game.h"
 #include "data_manager.h"
+#include "menu_handler.h"
 #include <event2/thread.h>
 
 int enable_log = 0;
@@ -18,6 +19,7 @@ int main(int argc, char* argv[]) {
 #endif //_WIN32
 	ygo::Game _game;
 	ygo::mainGame = &_game;
+	_game.window_size = dimension2du(1024, 640);
 	if(!ygo::mainGame->Initialize())
 		return 0;
 
@@ -34,26 +36,27 @@ int main(int argc, char* argv[]) {
 			event.EventType = irr::EET_GUI_EVENT;
 			event.GUIEvent.EventType = irr::gui::EGET_BUTTON_CLICKED;
 			if(!strcmp(argv[i], "-j")) {
-				event.GUIEvent.Caller = ygo::mainGame->btnLanMode;
-				ygo::mainGame->device->postEventFromUser(event);
-				//TODO: wait for wLanWindow show. if network connection faster than wLanWindow, wLanWindow will still show on duel scene.
-				event.GUIEvent.Caller = ygo::mainGame->btnJoinHost;
-				ygo::mainGame->device->postEventFromUser(event);
+				ygo::mainGame->wMainMenu->setVisible(false);
+				ygo::mainGame->menuHandler.OnJoinHost();
 			} else if(!strcmp(argv[i], "-d")) {
 				event.GUIEvent.Caller = ygo::mainGame->btnDeckEdit;
 				ygo::mainGame->device->postEventFromUser(event);
 			} else if(!strcmp(argv[i], "-r")) {
 				event.GUIEvent.Caller = ygo::mainGame->btnReplayMode;
 				ygo::mainGame->device->postEventFromUser(event);
-				ygo::mainGame->lstReplayList->setSelected(0);
-				event.GUIEvent.Caller = ygo::mainGame->btnLoadReplay;
-				ygo::mainGame->device->postEventFromUser(event);
+				ygo::mainGame->lstReplayList->setSelected(ygo::mainGame->gameConf.lastreplay);
+				if(ygo::mainGame->lstReplayList->getSelected() != -1){
+					event.GUIEvent.Caller = ygo::mainGame->btnLoadReplay;
+					ygo::mainGame->device->postEventFromUser(event);
+				}
 			} else if(!strcmp(argv[i], "-s")) {
 				event.GUIEvent.Caller = ygo::mainGame->btnServerMode;
 				ygo::mainGame->device->postEventFromUser(event);
-				ygo::mainGame->lstSinglePlayList->setSelected(0);
-				event.GUIEvent.Caller = ygo::mainGame->btnLoadSinglePlay;
-				ygo::mainGame->device->postEventFromUser(event);
+				ygo::mainGame->lstSinglePlayList->setSelected(ygo::mainGame->gameConf.lastpuzzle);
+				if(ygo::mainGame->lstSinglePlayList->getSelected() != -1){
+					event.GUIEvent.Caller = ygo::mainGame->btnLoadSinglePlay;
+					ygo::mainGame->device->postEventFromUser(event);
+				}
 			}
 
 		}

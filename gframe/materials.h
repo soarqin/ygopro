@@ -16,6 +16,7 @@ public:
 	S3DVertex vChainNum[4];
 	S3DVertex vActivate[4];
 	S3DVertex vField[4];
+	S3DVertex vFieldSpell[4];
 	S3DVertex vBackLine[76];
 	S3DVertex vFields[128];
 	S3DVertex vArrow[40];
