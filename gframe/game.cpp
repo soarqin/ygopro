@@ -39,7 +39,7 @@ bool Game::Initialize() {
 	{
 		skinSystem = new CGUISkinSystem("skins", device);
 		core::array<core::stringw> skins = skinSystem->listSkins();
-		if (gameConf.skin_index < skins.size())
+		if ((size_t)gameConf.skin_index < skins.size())
 		{
 			int index = skins.size() - gameConf.skin_index - 1; // reverse index
 			skinSystem->applySkin(skins[index].c_str());
