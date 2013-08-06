@@ -741,6 +741,8 @@ void DeckBuilder::FilterCards() {
 				continue;
 			if(filter_lm == 5 && data.ot != 2)
 				continue;
+			if(filter_lm == 6 && data.ot != 4)
+				continue;
 		}
 		if(pstr) {
 			if (!CardNameCompare(text.name, pstr) && !CardNameCompare(text.text, pstr))
