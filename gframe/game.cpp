@@ -578,7 +578,6 @@ void Game::MainLoop() {
 		if(dInfo.isStarted) {
 	      if(imageManager.tBackGround2)
 			driver->draw2DImage(imageManager.tBackGround2, Resize(0, 0, 1024, 640), recti(0, 0, imageManager.tBackGround->getOriginalSize().Width, imageManager.tBackGround->getOriginalSize().Height));
-		  imageManager.LoadPendingTextures();
 		  if(mainGame->showcardcode == 1 || mainGame->showcardcode == 3)
 			  Game::PlayMusic("./sound/duelwin.mp3",true);
 		  else if(mainGame->showcardcode == 2)

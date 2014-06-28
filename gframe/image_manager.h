@@ -28,8 +28,6 @@ public:
 	void SetDevice(irr::IrrlichtDevice* dev);
 	void ClearTexture();
 	void RemoveTexture(int code);
-	void LoadSleeve(int player, wchar_t* site, wchar_t* dir);
-	void LoadPendingTextures();
 	Mutex mutex;
 	irr::video::ITexture* GetTexture(int code);
 	irr::video::ITexture* GetTextureThumb(int code);
@@ -61,11 +59,6 @@ public:
 	irr::video::ITexture* tField;
 	irr::video::ITexture* tFieldTransparent;
 	irr::video::ITexture* tAvatar[4];
-
-private:
-	ITexture* DownloadTexture(TextureData *textureData);
-	void ApplyTexture(TextureData *textureData, ITexture *texture);
-	std::vector<TextureData *> pendingTextures;
 };
 
 extern ImageManager imageManager;

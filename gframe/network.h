@@ -84,11 +84,6 @@ struct STOC_Chat {
 	unsigned short player;
 	unsigned short msg[256];
 };
-struct STOC_Sleeve {
-	unsigned short player;
-	unsigned short site[256];
-	unsigned short dir[256];
-};
 struct STOC_HS_PlayerEnter {
 	unsigned short name[20];
 	unsigned char pos;
