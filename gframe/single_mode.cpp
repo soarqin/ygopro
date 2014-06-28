@@ -161,7 +161,7 @@ bool SingleMode::SinglePlayAnalyze(char* msg, unsigned int len) {
 			count = BufferIO::ReadInt8(pbuf);
 			pbuf += count * 7;
 			count = BufferIO::ReadInt8(pbuf);
-			pbuf += count * 11 + 3;
+			pbuf += count * 11 + 2;
 			SinglePlayRefresh();
 			if(!DuelClient::ClientAnalyze(offset, pbuf - offset)) {
 				mainGame->singleSignal.Reset();
