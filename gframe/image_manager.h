@@ -58,7 +58,6 @@ public:
 	irr::video::ITexture* tBackGround2;
 	irr::video::ITexture* tField;
 	irr::video::ITexture* tFieldTransparent;
-	irr::video::ITexture* tAvatar[4];
 };
 
 extern ImageManager imageManager;

@@ -26,8 +26,6 @@ bool ImageManager::Initial() {
 	tBackGround2 = driver->getTexture("textures/bg2.jpg"); 
 	tField = driver->getTexture("textures/field2.png");
 	tFieldTransparent = driver->getTexture("textures/field-transparent.png");
-	for (int i = 0; i < 4; ++i)
-		tAvatar[i] = NULL;
 	return true;
 }
 void ImageManager::SetDevice(irr::IrrlichtDevice* dev) {
