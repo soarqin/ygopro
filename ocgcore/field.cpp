@@ -27,7 +27,6 @@ field::field(duel* pduel) {
 	this->pduel = pduel;
 	infos.copy_id = 1;
 	infos.turn_player = 0;
-	infos.shuffle_count = 0;
 	infos.turn_id = 0;
 	infos.field_id = 1;
 	infos.card_id = 1;
@@ -1642,18 +1641,32 @@ int32 field::check_tuner_material(card* pcard, card* tuner, int32 findex1, int32
 			}
 			card_vector nsyn;
 			card* pm;
-			for(uint8 p = 0; p < 2; ++p) {
-				for(int32 i = 0; i < 5; ++i) {
-					pm = player[p].list_mzone[i];
-					if(pm && pm != tuner && pm != smat && pm->is_position(POS_FACEUP) && pm->is_can_be_synchro_material(pcard, tuner)) {
-						if(mg && !mg->has_card(pm))
-							continue;
+			if(mg) {
+				for(auto cit = mg->container.begin(); cit != mg->container.end(); ++cit) {
+					pm = *cit;
+					if(pm != tuner && pm != smat && pm->is_can_be_synchro_material(pcard, tuner)) {
 						if(pcheck)
 							pcheck->get_value(pm);
+						if(pm->current.location == LOCATION_MZONE && !pm->is_position(POS_FACEUP))
+							continue;
 						if(!pduel->lua->check_matching(pm, findex2, 0))
 							continue;
 						nsyn.push_back(pm);
 						pm->operation_param = pm->get_synchro_level(pcard);
+					}
+				}
+			} else {
+				for(uint8 p = 0; p < 2; ++p) {
+					for(int32 i = 0; i < 5; ++i) {
+						pm = player[p].list_mzone[i];
+						if(pm && pm != tuner && pm != smat && pm->is_position(POS_FACEUP) && pm->is_can_be_synchro_material(pcard, tuner)) {
+							if(pcheck)
+								pcheck->get_value(pm);
+							if(!pduel->lua->check_matching(pm, findex2, 0))
+								continue;
+							nsyn.push_back(pm);
+							pm->operation_param = pm->get_synchro_level(pcard);
+						}
 					}
 				}
 			}

@@ -1851,38 +1851,38 @@ int32 field::process_point_event(int16 step, int32 special, int32 skip_new) {
 		return FALSE;
 	}
 	case 8: {
-		//if(!(core.duel_options & DUEL_OBSOLETE_RULING) || (infos.phase != PHASE_MAIN1 && infos.phase != PHASE_MAIN2))
-		//	return FALSE;
-		//// Obsolete ignition effect ruling
-		//tevent e;
-		//if(core.current_chain.size() == 0 &&
-		//        (check_event(EVENT_SUMMON_SUCCESS, &e) || check_event(EVENT_SPSUMMON_SUCCESS, &e) || check_event(EVENT_FLIP_SUMMON_SUCCESS, &e))
-		//        && e.reason_player == infos.turn_player) {
-		//	chain newchain;
-		//	tevent e;
-		//	e.event_cards = 0;
-		//	e.event_value = 0;
-		//	e.event_player = PLAYER_NONE;
-		//	e.reason_effect = 0;
-		//	e.reason = 0;
-		//	e.reason_player = PLAYER_NONE;
-		//	for(auto eit = effects.ignition_effect.begin(); eit != effects.ignition_effect.end(); ++eit) {
-		//		effect* peffect = eit->second;
-		//		e.event_code = peffect->code;
-		//		if(peffect->handler->current.location == LOCATION_MZONE && peffect->is_chainable(infos.turn_player)
-		//		        && peffect->is_activateable(infos.turn_player, e)) {
-		//			newchain.flag = 0;
-		//			newchain.chain_id = infos.field_id++;
-		//			newchain.evt = e;
-		//			newchain.triggering_controler = peffect->handler->current.controler;
-		//			newchain.triggering_effect = peffect;
-		//			newchain.triggering_location = peffect->handler->current.location;
-		//			newchain.triggering_sequence = peffect->handler->current.sequence;
-		//			newchain.triggering_player = infos.turn_player;
-		//			core.select_chains.push_back(newchain);
-		//		}
-		//	}
-		//}
+		if(!(core.duel_options & DUEL_OBSOLETE_RULING) || (infos.phase != PHASE_MAIN1 && infos.phase != PHASE_MAIN2))
+			return FALSE;
+		// Obsolete ignition effect ruling
+		tevent e;
+		if(core.current_chain.size() == 0 &&
+		        (check_event(EVENT_SUMMON_SUCCESS, &e) || check_event(EVENT_SPSUMMON_SUCCESS, &e) || check_event(EVENT_FLIP_SUMMON_SUCCESS, &e))
+		        && e.reason_player == infos.turn_player) {
+			chain newchain;
+			tevent e;
+			e.event_cards = 0;
+			e.event_value = 0;
+			e.event_player = PLAYER_NONE;
+			e.reason_effect = 0;
+			e.reason = 0;
+			e.reason_player = PLAYER_NONE;
+			for(auto eit = effects.ignition_effect.begin(); eit != effects.ignition_effect.end(); ++eit) {
+				effect* peffect = eit->second;
+				e.event_code = peffect->code;
+				if(peffect->handler->current.location == LOCATION_MZONE && peffect->is_chainable(infos.turn_player)
+				        && peffect->is_activateable(infos.turn_player, e)) {
+					newchain.flag = 0;
+					newchain.chain_id = infos.field_id++;
+					newchain.evt = e;
+					newchain.triggering_controler = peffect->handler->current.controler;
+					newchain.triggering_effect = peffect;
+					newchain.triggering_location = peffect->handler->current.location;
+					newchain.triggering_sequence = peffect->handler->current.sequence;
+					newchain.triggering_player = infos.turn_player;
+					core.select_chains.push_back(newchain);
+				}
+			}
+		}
 		return FALSE;
 	}
 	case 9: {
@@ -2049,7 +2049,7 @@ int32 field::process_quick_effect(int16 step, int32 special, uint8 priority) {
 					for(auto cait = core.current_chain.begin(); cait != core.current_chain.end(); ++cait) {
 						if(cait->triggering_player == priority) {
 							if(!(peffect->flag & EFFECT_FLAG_MULTIACT_HAND)) {
-								if(cait->triggering_location == LOCATION_HAND || cait->triggering_effect->handler->data.code == peffect->handler->data.code) {
+								if(cait->triggering_location == LOCATION_HAND) {
 									act = false;
 									break;
 								}
@@ -2555,32 +2555,12 @@ int32 field::process_idle_command(uint16 step) {
 		} else if(ctype == 4) {
 			core.units.begin()->step = 8;
 			return FALSE;
-		} else if(ctype == 6) {
-			//to battlephase
-			core.units.begin()->step = 9;
-			pduel->write_buffer8(MSG_HINT);
-			pduel->write_buffer8(HINT_EVENT);
-			pduel->write_buffer8(1 - infos.turn_player);
-			pduel->write_buffer32(80);
-			core.select_chains.clear();
-			core.hint_timing[infos.turn_player] = TIMING_MAIN_END;
-			add_process(PROCESSOR_QUICK_EFFECT, 0, 0, 0, FALSE, 1 - infos.turn_player);
-			infos.priorities[infos.turn_player] = 1;
-			infos.priorities[1 - infos.turn_player] = 0;
-			core.units.begin()->arg1 = ctype;
-			return FALSE;
-		} else if(ctype == 8) {
-			core.units.begin()->step = -1;
-			shuffle(infos.turn_player, LOCATION_HAND);
-			infos.shuffle_count++;
-			return FALSE;
 		} else {
-			//to end phase
 			core.units.begin()->step = 9;
 			pduel->write_buffer8(MSG_HINT);
 			pduel->write_buffer8(HINT_EVENT);
 			pduel->write_buffer8(1 - infos.turn_player);
-			pduel->write_buffer32(81);
+			pduel->write_buffer32(23);
 			core.select_chains.clear();
 			core.hint_timing[infos.turn_player] = TIMING_MAIN_END;
 			add_process(PROCESSOR_QUICK_EFFECT, 0, 0, 0, FALSE, 1 - infos.turn_player);
@@ -2663,7 +2643,6 @@ int32 field::process_idle_command(uint16 step) {
 	}
 	case 11: {
 		returns.ivalue[0] = core.units.begin()->arg1;
-		infos.shuffle_count = 0;
 		return TRUE;
 	}
 	case 12: {
@@ -4479,6 +4458,11 @@ int32 field::solve_chain(uint16 step, uint32 skip_new) {
 			if(oit->second.op_cards)
 				pduel->delete_group(oit->second.op_cards);
 		}
+		for(auto cit = core.delayed_enable_set.begin(); cit != core.delayed_enable_set.end(); ++cit) {
+			if((*cit)->current.location == LOCATION_MZONE)
+				(*cit)->enable_field_effect(TRUE);
+		}
+		core.delayed_enable_set.clear();
 		adjust_all();
 		core.current_chain.pop_back();
 		if(!core.current_chain.size()) {

@@ -113,7 +113,6 @@ struct field_info {
 	uint8 phase;
 	uint8 turn_player;
 	uint8 priorities[2];
-	uint8 shuffle_count;
 };
 struct lpcost {
 	int32 count;
@@ -199,6 +198,7 @@ struct processor {
 	card_set operated_set;
 	card_set discarded_set;
 	card_set destroy_canceled;
+	card_set delayed_enable_set;
 	card_set summoned_cards_pt[2];
 	card_set normalsummoned_cards_pt[2];
 	card_set spsummoned_cards_pt[2];
