@@ -49,11 +49,11 @@ solution "ygo"
         targetdir "bin/release"
 
     include "ocgcore"
-    include "gframe"
+    include "gframe"   
+	include "lua"
+	include "sqlite3"
     if os.is("windows") then
     include "event"
     include "freetype"
     include "irrlicht"
-    include "lua"
-    include "sqlite3"
     end
