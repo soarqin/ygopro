@@ -91,25 +91,50 @@ bool Game::Initialize() {
 	guiFont = irr::gui::CGUITTFont::createTTFont(env, gameConf.textfont, gameConf.textfontsize);
 	textFont = guiFont;
 	smgr = device->getSceneManager();
-	device->setWindowCaption(L"YGOPro DevPro");
+	device->setWindowCaption(L"YGOPro X");
 	device->setResizable(true);
 	//main menu
 	wchar_t strbuf[256];
-	myswprintf(strbuf, L"YGOPro DevPro (Version:%X.0%X.%X)", PRO_VERSION >> 12, (PRO_VERSION >> 4) & 0xff, PRO_VERSION & 0xf);
-	wMainMenu = env->addWindow(rect<s32>(370, 200, 650, 415), false, strbuf);
+	myswprintf(strbuf, L"YGOPro X (Version:%X.0%X.%X)", PRO_VERSION >> 12, (PRO_VERSION >> 4) & 0xff, PRO_VERSION & 0xf);
+	wMainMenu = env->addWindow(rect<s32>(370, 200, 650, 450), false, strbuf);
 	wMainMenu->getCloseButton()->setVisible(false);
-	btnLanMode = env->addButton(rect<s32>(10, 30, 270, 60), wMainMenu, BUTTON_LAN_MODE, dataManager.GetSysString(1200));
-	btnServerMode = env->addButton(rect<s32>(10, 65, 270, 95), wMainMenu, BUTTON_SINGLE_MODE, dataManager.GetSysString(1201));
-	btnReplayMode = env->addButton(rect<s32>(10, 100, 270, 130), wMainMenu, BUTTON_REPLAY_MODE, dataManager.GetSysString(1202));
-//	btnTestMode = env->addButton(rect<s32>(10, 135, 270, 165), wMainMenu, BUTTON_TEST_MODE, dataManager.GetSysString(1203));
-	btnDeckEdit = env->addButton(rect<s32>(10, 135, 270, 165), wMainMenu, BUTTON_DECK_EDIT, dataManager.GetSysString(1204));
-	btnModeExit = env->addButton(rect<s32>(10, 170, 270, 200), wMainMenu, BUTTON_MODE_EXIT, dataManager.GetSysString(1210));
+	lastMenu = wMainMenu;
+	btnOnlineMode = env->addButton(rect<s32>(10, 30, 270, 60), wMainMenu, BUTTON_ONLINE_MODE, dataManager.GetSysString(2044));
+	btnLanMode = env->addButton(rect<s32>(10, 65, 270, 95), wMainMenu, BUTTON_LAN_MODE, dataManager.GetSysString(1200));
+	btnServerMode = env->addButton(rect<s32>(10, 100, 270, 130), wMainMenu, BUTTON_SINGLE_MODE, dataManager.GetSysString(1201));
+	btnReplayMode = env->addButton(rect<s32>(10, 135, 270, 165), wMainMenu, BUTTON_REPLAY_MODE, dataManager.GetSysString(1202));
+	btnDeckEdit = env->addButton(rect<s32>(10, 170, 270, 200), wMainMenu, BUTTON_DECK_EDIT, dataManager.GetSysString(1204));
+	btnModeExit = env->addButton(rect<s32>(10, 205, 270, 235), wMainMenu, BUTTON_MODE_EXIT, dataManager.GetSysString(1210));
+	//online mode
+	myswprintf(strbuf, L"%ls : %ls", dataManager.GetSysString(2044), gameConf.servername);
+	wOnlineMenu = env->addWindow(rect<s32>(370, 200, 650, 485), false, strbuf);
+	wOnlineMenu->getCloseButton()->setVisible(false);
+	wOnlineMenu->setVisible(false);
+	btnQuickJoin = env->addButton(rect<s32>(10, 30, 270, 60), wOnlineMenu, BUTTON_QUICK_JOIN, dataManager.GetSysString(2000));
+	btnHost = env->addButton(rect<s32>(10, 65, 270, 95), wOnlineMenu, BUTTON_HOST, dataManager.GetSysString(1224));
+	btnSpectate = env->addButton(rect<s32>(10, 100, 270, 130), wOnlineMenu, BUTTON_SPECTATE, dataManager.GetSysString(2002));
+	btnDeckEdit = env->addButton(rect<s32>(10, 135, 270, 165), wOnlineMenu, BUTTON_DECK_EDIT, dataManager.GetSysString(1204));
+	btnReplayMode = env->addButton(rect<s32>(10, 170, 270, 200), wOnlineMenu, BUTTON_REPLAY_MODE, dataManager.GetSysString(1202));
+	btnBack = env->addButton(rect<s32>(10, 205, 270, 235), wOnlineMenu, BUTTON_MENU_BACK, dataManager.GetSysString(2001));
+	stNickname = env->addStaticText(dataManager.GetSysString(1220), rect<s32>(10, 240, 110, 270), false, false, wOnlineMenu);
+	stNickname->setTextAlignment(irr::gui::EGUIA_CENTER, irr::gui::EGUIA_CENTER);
+	ebOnlineNickName = env->addEditBox(gameConf.nickname, rect<s32>(110, 240, 270, 270), true, wOnlineMenu, EDITBOX_NICKNAME_ONLINE);
+	ebOnlineNickName->setTextAlignment(irr::gui::EGUIA_CENTER, irr::gui::EGUIA_CENTER);
+	//Quick Join
+	wQuickMenu = env->addWindow(rect<s32>(370, 200, 650, 415), false, dataManager.GetSysString(2000));
+	wQuickMenu->getCloseButton()->setVisible(false);
+	wQuickMenu->setVisible(false);
+	btnAllJoin = env->addButton(rect<s32>(10, 30, 270, 60), wQuickMenu, BUTTON_QUICK_ALL, dataManager.GetSysString(2004));
+	btnTCGJoin = env->addButton(rect<s32>(10, 65, 270, 95), wQuickMenu, BUTTON_QUICK_TCG, dataManager.GetSysString(1241));
+	btnOCGJoin = env->addButton(rect<s32>(10, 100, 270, 130), wQuickMenu, BUTTON_QUICK_OCG, dataManager.GetSysString(1240));
+	btnOCGTCGJoin = env->addButton(rect<s32>(10, 135, 270, 165), wQuickMenu, BUTTON_QUICK_TCG_OCG, dataManager.GetSysString(1242));
+	btnQuickBack = env->addButton(rect<s32>(10, 170, 270, 200), wQuickMenu, BUTTON_QUICK_BACK, dataManager.GetSysString(2001));
 	//lan mode
 	wLanWindow = env->addWindow(rect<s32>(220, 100, 800, 520), false, dataManager.GetSysString(1200));
 	wLanWindow->getCloseButton()->setVisible(false);
 	wLanWindow->setVisible(false);
 	env->addStaticText(dataManager.GetSysString(1220), rect<s32>(10, 30, 220, 50), false, false, wLanWindow);
-	ebNickName = env->addEditBox(gameConf.nickname, rect<s32>(110, 25, 450, 50), true, wLanWindow);
+	ebNickName = env->addEditBox(gameConf.nickname, rect<s32>(110, 25, 450, 50), true, wLanWindow, EDITBOX_NICKNAME_LAN);
 	ebNickName->setTextAlignment(irr::gui::EGUIA_UPPERLEFT, irr::gui::EGUIA_CENTER);
 	lstHostList = env->addListBox(rect<s32>(10, 60, 570, 320), wLanWindow, LISTBOX_LAN_HOST, true);
 	lstHostList->setItemHeight(18);
@@ -632,7 +657,7 @@ void Game::MainLoop() {
 			usleep(20000);
 #endif
 		if(cur_time >= 1000) {
-			myswprintf(cap, L"YGOPro DevPro | FPS: %d", fps);
+			myswprintf(cap, L"YGOPro X | FPS: %d", fps);
 			device->setWindowCaption(cap);
 			fps = 0;
 			cur_time -= 1000;
@@ -825,9 +850,11 @@ void Game::LoadConfig() {
 	char valbuf[256];
 	wchar_t wstr[256];
 	gameConf.antialias = 0;
-	gameConf.serverport = 7911;
+	BufferIO::CopyWStr(L"Localhost", gameConf.servername, 30);
+	BufferIO::CopyWStr(L"127.0.0.1", gameConf.serverip, 20);
+	gameConf.serverport = 8911;
 	gameConf.textfontsize = 12;
-	gameConf.nickname[0] = 0;
+	BufferIO::CopyWStr(L"New Player", gameConf.nickname, 20);
 	gameConf.gamename[0] = 0;
 	gameConf.lastdeck[0] = 0;
 	gameConf.numfont[0] = 0;
@@ -847,7 +874,6 @@ void Game::LoadConfig() {
 	gameConf.soundvolume = 1.0;
 	gameConf.skin_index = -1;
 	gameConf.fullscreen = false;
-	gameConf.enablesleeveloading = true;
 	fseek(fp, 0, SEEK_END);
 	int fsize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
@@ -917,8 +943,12 @@ void Game::LoadConfig() {
 		} else if(!strcmp(strbuf,"lastreplay")) {
 			BufferIO::DecodeUTF8(valbuf, wstr);
 			BufferIO::CopyWStr(wstr, gameConf.lastreplay, 256);
-		} else if(!strcmp(strbuf,"enable_sleeve_loading")) {
-			gameConf.enablesleeveloading = atoi(valbuf) > 0;
+		} else if(!strcmp(strbuf,"servername")) {
+			BufferIO::DecodeUTF8(valbuf, wstr);
+			BufferIO::CopyWStr(wstr, gameConf.servername, 30);
+		} else if(!strcmp(strbuf,"serverip")) {
+			BufferIO::DecodeUTF8(valbuf, wstr);
+			BufferIO::CopyWStr(wstr, gameConf.serverip, 20);
 		}
 	}
 	fclose(fp);
@@ -1032,7 +1062,7 @@ void Game::AddChatMsg(wchar_t* msg, int player) {
 		chatMsg[0].append(L": ");
 		break;
 	case 7: //local name
-		chatMsg[0].append(mainGame->ebNickName->getText());
+		chatMsg[0].append(mainGame->gameConf.nickname);
 		chatMsg[0].append(L": ");
 		break;
 	case 8: //system custom message, no prefix.

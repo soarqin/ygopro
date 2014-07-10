@@ -39,7 +39,8 @@ struct Config {
 	double musicvolume;
 	int skin_index;
 	bool fullscreen;
-	bool enablesleeveloading;
+	wchar_t servername[30];
+	wchar_t serverip[20];
 };
 
 struct DuelInfo {
@@ -212,12 +213,29 @@ public:
 	irr::gui::IGUIButton* btnSaveLog;
 	irr::gui::IGUIScrollBar* scrSound;
 	irr::gui::IGUIScrollBar* scrMusic;
+
+	irr::gui::IGUIWindow *lastMenu;
+	//online menu
+	irr::gui::IGUIWindow* wOnlineMenu;
+	irr::gui::IGUIButton* btnQuickJoin;
+	irr::gui::IGUIButton* btnHost;
+	irr::gui::IGUIButton* btnSpectate;
+	irr::gui::IGUIButton* btnBack;
+	irr::gui::IGUIEditBox* ebOnlineNickName;
+	irr::gui::IGUIStaticText* stNickname;
+	//quick host
+	irr::gui::IGUIWindow* wQuickMenu;
+	irr::gui::IGUIButton* btnAllJoin;
+	irr::gui::IGUIButton* btnTCGJoin;
+	irr::gui::IGUIButton* btnOCGJoin;
+	irr::gui::IGUIButton* btnOCGTCGJoin;
+	irr::gui::IGUIButton* btnQuickBack;
 	//main menu
 	irr::gui::IGUIWindow* wMainMenu;
+	irr::gui::IGUIButton* btnOnlineMode;
 	irr::gui::IGUIButton* btnLanMode;
 	irr::gui::IGUIButton* btnServerMode;
 	irr::gui::IGUIButton* btnReplayMode;
-	irr::gui::IGUIButton* btnTestMode;
 	irr::gui::IGUIButton* btnDeckEdit;
 	irr::gui::IGUIButton* btnModeExit;
 	//lan
@@ -427,6 +445,7 @@ extern Game* mainGame;
 #define COMMAND_ATTACK		0x0040
 #define COMMAND_LIST		0x0080
 
+#define BUTTON_ONLINE_MODE			99
 #define BUTTON_LAN_MODE				100
 #define BUTTON_SINGLE_MODE			101
 #define BUTTON_REPLAY_MODE			102
@@ -511,6 +530,8 @@ extern Game* mainGame;
 #define BUTTON_START_FILTER			312
 #define SCROLL_FILTER				314
 #define EDITBOX_KEYWORD				315
+#define EDITBOX_NICKNAME_LAN		316
+#define EDITBOX_NICKNAME_ONLINE		317
 #define BUTTON_REPLAY_START			320
 #define BUTTON_REPLAY_PAUSE			321
 #define BUTTON_REPLAY_STEP			322
@@ -525,4 +546,14 @@ extern Game* mainGame;
 #define CHECKBOX_ENABLE_MUSIC		354
 #define BUTTON_CLEAR_FILTER			1001
 #define BUTTON_DELETE_DECK			1002
+//online mode
+#define BUTTON_QUICK_JOIN			1050
+#define BUTTON_HOST					1051
+#define BUTTON_MENU_BACK			1052
+#define BUTTON_SPECTATE				1053
+#define BUTTON_QUICK_ALL			1054
+#define BUTTON_QUICK_TCG			1055
+#define BUTTON_QUICK_OCG			1056
+#define BUTTON_QUICK_TCG_OCG		1057
+#define BUTTON_QUICK_BACK			1058
 #endif // GAME_H

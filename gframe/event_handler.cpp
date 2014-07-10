@@ -109,7 +109,10 @@ bool ClientField::OnEvent(const irr::SEvent& event) {
 						mainGame->btnCreateHost->setEnabled(true);
 						mainGame->btnJoinHost->setEnabled(true);
 						mainGame->btnJoinCancel->setEnabled(true);
-						mainGame->ShowElement(mainGame->wLanWindow);
+						if(mainGame->lastMenu == mainGame->wOnlineMenu)
+							mainGame->ShowElement(mainGame->lastMenu);
+						else
+							mainGame->ShowElement(mainGame->wLanWindow);
 					}
 				} else {
 					DuelClient::SendPacketToServer(CTOS_SURRENDER);

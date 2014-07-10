@@ -101,10 +101,10 @@ void DuelClient::ClientRead(bufferevent* bev, void* ctx) {
 	}
 }
 void DuelClient::ClientEvent(bufferevent *bev, short events, void *ctx) {
+	bool create_game = (size_t)ctx != 0;
 	if (events & BEV_EVENT_CONNECTED) {
-		bool create_game = (size_t)ctx != 0;
 		CTOS_PlayerInfo cspi;
-		BufferIO::CopyWStr(mainGame->ebNickName->getText(), cspi.name, 20);
+		BufferIO::CopyWStr(mainGame->gameConf.nickname, cspi.name, 20);
 		SendPacketToServer(CTOS_PLAYER_INFO, cspi);
 		if(create_game) {
 			CTOS_CreateGame cscg;
@@ -140,6 +140,12 @@ void DuelClient::ClientEvent(bufferevent *bev, short events, void *ctx) {
 				mainGame->gMutex.Lock();
 				mainGame->env->addMessageBox(L"", dataManager.GetSysString(1400));
 				mainGame->gMutex.Unlock();
+				if(!create_game)
+					mainGame->ShowElement(mainGame->lastMenu);
+				else {
+				mainGame->btnHostConfirm->setEnabled(true);
+				mainGame->btnHostCancel->setEnabled(true);
+				}
 			} else if(connect_state == 0x7) {
 				if(!mainGame->dInfo.isStarted && !mainGame->is_building) {
 					mainGame->btnCreateHost->setEnabled(true);
@@ -147,7 +153,10 @@ void DuelClient::ClientEvent(bufferevent *bev, short events, void *ctx) {
 					mainGame->btnJoinCancel->setEnabled(true);
 					mainGame->gMutex.Lock();
 					mainGame->HideElement(mainGame->wHostPrepare);
-					mainGame->ShowElement(mainGame->wLanWindow);
+					if(mainGame->lastMenu == mainGame->wOnlineMenu)
+						mainGame->ShowElement(mainGame->lastMenu);
+					else
+						mainGame->ShowElement(mainGame->wLanWindow);
 					mainGame->wChat->setVisible(false);
 					if(events & BEV_EVENT_EOF)
 						mainGame->env->addMessageBox(L"", dataManager.GetSysString(1401));
@@ -167,7 +176,10 @@ void DuelClient::ClientEvent(bufferevent *bev, short events, void *ctx) {
 					mainGame->dInfo.isStarted = false;
 					mainGame->is_building = false;
 					mainGame->device->setEventReceiver(&mainGame->menuHandler);
-					mainGame->ShowElement(mainGame->wLanWindow);
+					if(mainGame->lastMenu == mainGame->wOnlineMenu)
+						mainGame->ShowElement(mainGame->lastMenu);
+					else
+						mainGame->ShowElement(mainGame->wLanWindow);
 					mainGame->gMutex.Unlock();
 				}
 			}
@@ -373,6 +385,8 @@ void DuelClient::HandleSTOCPacketLan(char* data, unsigned int len) {
 		mainGame->wChat->setVisible(true);
 		mainGame->gMutex.Unlock();
 		connect_state |= 0x4;
+		mainGame->btnHostConfirm->setEnabled(true);
+		mainGame->btnHostCancel->setEnabled(true);
 		break;
 	}
 	case STOC_TYPE_CHANGE: {
@@ -511,7 +525,10 @@ void DuelClient::HandleSTOCPacketLan(char* data, unsigned int len) {
 		mainGame->btnJoinHost->setEnabled(true);
 		mainGame->btnJoinCancel->setEnabled(true);
 		mainGame->device->setEventReceiver(&mainGame->menuHandler);
-		mainGame->ShowElement(mainGame->wLanWindow);
+		if(mainGame->lastMenu == mainGame->wOnlineMenu)
+			mainGame->ShowElement(mainGame->lastMenu);
+		else
+			mainGame->ShowElement(mainGame->wLanWindow);
 		mainGame->gMutex.Unlock();
 		event_base_loopbreak(client_base);
 		if(exit_on_return)

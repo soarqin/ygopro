@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 			event.GUIEvent.EventType = irr::gui::EGET_BUTTON_CLICKED;
 			if(!strcmp(argv[i], "-j")) {
 				ygo::mainGame->wMainMenu->setVisible(false);
-				ygo::mainGame->menuHandler.OnJoinHost();
+				ygo::mainGame->menuHandler.OnJoinHost((wchar_t *)ygo::mainGame->ebJoinIP->getText(),_wtoi(ygo::mainGame->ebJoinPort->getText()));
 			} else if(!strcmp(argv[i], "-d")) {
 				event.GUIEvent.Caller = ygo::mainGame->btnDeckEdit;
 				ygo::mainGame->device->postEventFromUser(event);

@@ -9,7 +9,8 @@ class MenuHandler: public irr::IEventReceiver {
 public:
 	virtual bool OnEvent(const irr::SEvent& event);
 
-	void OnJoinHost();
+	void OnJoinHost(wchar_t* address, unsigned int port);
+	unsigned int MenuHandler::GetIP(wchar_t* address);
 	
 };
 
