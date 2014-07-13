@@ -10,7 +10,7 @@ public:
 	virtual bool OnEvent(const irr::SEvent& event);
 
 	void OnJoinHost(wchar_t* address, unsigned int port);
-	unsigned int MenuHandler::GetIP(wchar_t* address);
+	unsigned int GetIP(wchar_t* address);
 	
 };
 

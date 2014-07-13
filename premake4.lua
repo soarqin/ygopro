@@ -15,8 +15,8 @@ solution "ygo"
 
     configuration "macosx"
         defines { "LUA_USE_MACOSX" }
-        includedirs { "/opt/local/include" }
-        libdirs { "/opt/local/lib" }
+		includedirs { "/usr/local/include", "/usr/local/include/freetype2", "/usr/local/include/irrlicht" }  
+		libdirs { "/usr/local/lib" }
 
     configuration "linux"
         defines { "LUA_USE_LINUX" }
