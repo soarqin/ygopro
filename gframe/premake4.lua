@@ -22,4 +22,10 @@ project "ygopro"
     configuration "not windows"
         includedirs { "/usr/include/lua", "/usr/include/lua5.2", "/usr/include/lua/5.2", "/usr/include/irrlicht", "/usr/include/freetype2" }
         excludes { "COSOperator.*" }
-        links { "event_pthreads", "GL", "dl", "pthread" }
+        if os.is("macosx") then
+			linkoptions { "-framework OpenGL", "-framework Cocoa", "-framework IOKit", "/usr/local/lib/libevent_pthreads.a" }
+			links { "dl", "pthread", "objc" } 
+			excludes "CGUIEditBox.cpp" 
+		else
+			links { "event_pthreads", "GL", "dl", "pthread" } 
+		end

@@ -1,10 +1,5 @@
 project "ocgcore"
-	if os.is("windows") then
-		kind "StaticLib"
-	else
-		kind "SharedLib"
-	end
-
+	kind "StaticLib"
     files { "**.cc", "**.cpp", "**.c", "**.h" }
     configuration "windows"
         includedirs { ".." }

@@ -17,6 +17,7 @@ solution "ygo"
         defines { "LUA_USE_MACOSX" }
 		includedirs { "/usr/local/include", "/usr/local/include/freetype2", "/usr/local/include/irrlicht" }  
 		libdirs { "/usr/local/lib" }
+		linkoptions { "-framework OpenGL" }
 
     configuration "linux"
         defines { "LUA_USE_LINUX" }
