@@ -25,7 +25,6 @@ project "ygopro"
         if os.is("macosx") then
 			linkoptions { "-framework OpenGL", "-framework Cocoa", "-framework IOKit", "/usr/local/lib/libevent_pthreads.a" }
 			links { "dl", "pthread", "objc" } 
-			excludes "CGUIEditBox.cpp" 
 		else
 			links { "event_pthreads", "GL", "dl", "pthread" } 
 		end
