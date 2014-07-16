@@ -842,13 +842,6 @@ void Game::RefreshSingleplay() {
 #endif
 }
 void Game::LoadConfig() {
-	FILE* fp = fopen("system.conf", "r");
-	if(!fp)
-		return;
-	char linebuf[256];
-	char strbuf[32];
-	char valbuf[256];
-	wchar_t wstr[256];
 	gameConf.antialias = 0;
 	BufferIO::CopyWStr(L"Localhost", gameConf.servername, 30);
 	BufferIO::CopyWStr(L"127.0.0.1", gameConf.serverip, 20);
@@ -857,8 +850,8 @@ void Game::LoadConfig() {
 	BufferIO::CopyWStr(L"New Player", gameConf.nickname, 20);
 	gameConf.gamename[0] = 0;
 	gameConf.lastdeck[0] = 0;
-	gameConf.numfont[0] = 0;
-	gameConf.textfont[0] = 0;
+	BufferIO::CopyWStr(L"fonts/simhei.ttf", gameConf.textfont, 256);
+	BufferIO::CopyWStr(L"fonts/arialbd.ttf", gameConf.numfont, 256);
 	gameConf.lastip[0] = 0;
 	gameConf.lastport[0] = 0;
 	gameConf.roompass[0] = 0;
@@ -874,6 +867,13 @@ void Game::LoadConfig() {
 	gameConf.soundvolume = 1.0;
 	gameConf.skin_index = -1;
 	gameConf.fullscreen = false;
+	FILE* fp = fopen("system.conf", "r");
+	if(!fp)
+		return;
+	char linebuf[256];
+	char strbuf[32];
+	char valbuf[256];
+	wchar_t wstr[256];
 	fseek(fp, 0, SEEK_END);
 	int fsize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
