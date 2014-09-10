@@ -348,7 +348,8 @@ void ClientField::ShowSelectCard(bool buttonok) {
 			mainGame->btnCardSelect[i]->setPressed(false);
 			mainGame->btnCardSelect[i]->setVisible(true);
 			if(mainGame->dInfo.curMsg != MSG_SORT_CHAIN && mainGame->dInfo.curMsg != MSG_SORT_CARD) {
-				myswprintf(formatBuffer, L"%ls[%d]", dataManager.FormatLocation(selectable_cards[i]->location), selectable_cards[i]->sequence + 1);
+				myswprintf(formatBuffer, L"%ls[%d]", dataManager.FormatLocation(selectable_cards[i]->location, selectable_cards[i]->sequence),
+					selectable_cards[i]->sequence + 1);
 				mainGame->stCardPos[i]->setText(formatBuffer);
 				mainGame->stCardPos[i]->setVisible(true);;
 				if(selectable_cards[i]->controler)
@@ -379,7 +380,8 @@ void ClientField::ShowSelectCard(bool buttonok) {
 			mainGame->btnCardSelect[i]->setPressed(false);
 			mainGame->btnCardSelect[i]->setVisible(true);
 			if(mainGame->dInfo.curMsg != MSG_SORT_CHAIN && mainGame->dInfo.curMsg != MSG_SORT_CARD) {
-				myswprintf(formatBuffer, L"%ls[%d]", dataManager.FormatLocation(selectable_cards[i]->location), selectable_cards[i]->sequence + 1);
+				myswprintf(formatBuffer, L"%ls[%d]", dataManager.FormatLocation(selectable_cards[i]->location, selectable_cards[i]->sequence),
+					selectable_cards[i]->sequence + 1);
 				mainGame->stCardPos[i]->setText(formatBuffer);
 				mainGame->stCardPos[i]->setVisible(true);
 				if(selectable_cards[i]->controler)
@@ -647,6 +649,18 @@ void ClientField::GetChainLocation(int controler, int location, int sequence, ir
 		}
 		break;
 	}
+	case LOCATION_EXTRA: {
+		if (controler == 0) {
+			t->X = (matManager.vFields[8].Pos.X + matManager.vFields[9].Pos.X) / 2;
+			t->Y = (matManager.vFields[8].Pos.Y + matManager.vFields[10].Pos.Y) / 2;
+			t->Z = extra[controler].size() * 0.01f + 0.03f;
+		} else {
+			t->X = (matManager.vFields[76].Pos.X + matManager.vFields[77].Pos.X) / 2;
+			t->Y = (matManager.vFields[76].Pos.Y + matManager.vFields[78].Pos.Y) / 2;
+			t->Z = extra[controler].size() * 0.01f + 0.03f;
+		}
+		break;
+		}
 	}
 }
 void ClientField::GetCardLocation(ClientCard* pcard, irr::core::vector3df* t, irr::core::vector3df* r, bool setTrans) {

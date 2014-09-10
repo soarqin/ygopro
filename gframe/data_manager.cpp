@@ -188,6 +188,7 @@ const wchar_t* DataManager::GetCounterName(int code) {
 		return unknown_string;
 	return csit->second;
 }
+
 const wchar_t* DataManager::GetNumString(int num) {
 	return numStrings[num];
 }
@@ -205,7 +206,15 @@ const std::vector<wchar_t*> DataManager::GetSetcodeList() {
 			keys.push_back(it->first);
 	return keys;
 }
-const wchar_t* DataManager::FormatLocation(int location) {
+const wchar_t* DataManager::FormatLocation(int location, int sequence) {
+	if(location == 0x8) {
+		if(sequence < 5)
+			return GetSysString(1003);
+		else if(sequence == 5)
+			return GetSysString(1008);
+		else
+			return GetSysString(1009);
+	}
 	int filter = 1, i = 1000;
 	while(filter != location) {
 		filter <<= 1;
